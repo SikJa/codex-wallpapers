@@ -1,0 +1,6 @@
+{
+  "schema": 1,
+  "windowsPackages": ["26.908.4834.0"],
+  "status": "preview",
+  "note": "Selectors originate from this locally verified Codex version. The distributable must also pass a clean-install manual test; see docs/TESTING.md."
+}

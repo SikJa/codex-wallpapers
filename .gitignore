@@ -1,0 +1,15 @@
+node_modules/
+.local/
+test-results/
+*.log
+*.exe
+*.ico
+*.lnk
+*.mp4
+*.webm
+*.png
+*.jpg
+*.jpeg
+*.webp
+.env*
+!.env.example
