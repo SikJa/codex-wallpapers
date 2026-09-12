@@ -1,4 +1,4 @@
-// Executed once per Codex window. No networking, filesystem or account API access.
+// Executed once per Codex window. Wallpaper rendering has no network or filesystem access.
 (options => {
   if(window.__CODEX_WALLPAPERS_PUBLIC__)return 'present';
   if(!document.querySelector('main[data-app-shell-main-surface]'))throw Error('Unsupported Codex shell');
@@ -94,7 +94,7 @@
   const observer=new MutationObserver(insertMenu);observer.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['aria-labelledby','aria-label']});insertMenu();
   const visibility=()=>appearance();document.addEventListener('visibilitychange',visibility);reduced.addEventListener('change',visibility);
   const storage=e=>{if(e.key!==KEY)return;const next=readPrefs(),previous=prefs;prefs=next;if(items.has(next.selected)&&current?.src!==items.get(next.selected).url)select(next.selected,{persist:false}).catch(()=>{if(prefs===next){prefs=previous;appearance();updateDetails();}});else{appearance();updateDetails();}};window.addEventListener('storage',storage);
-  function dispose(){disposed=true;seq++;observer.disconnect();for(const [menu,handler] of menuHandlers)menu.removeEventListener('keydown',handler,true);menuHandlers.clear();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',visibility);window.removeEventListener('storage',storage);current?.pause?.();current?.remove();host.remove();surface.remove();document.documentElement.classList.remove('cw-active');document.querySelectorAll('[data-cw-menu]').forEach(e=>e.remove());for(const url of urls)URL.revokeObjectURL(url);items.clear();chunks.clear();delete window.__CODEX_WALLPAPERS_PUBLIC__;}
+  function dispose(){disposed=true;seq++;window.__CW_USAGE__?.dispose();observer.disconnect();for(const [menu,handler] of menuHandlers)menu.removeEventListener('keydown',handler,true);menuHandlers.clear();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',visibility);window.removeEventListener('storage',storage);current?.pause?.();current?.remove();host.remove();surface.remove();document.documentElement.classList.remove('cw-active');document.querySelectorAll('[data-cw-menu]').forEach(e=>e.remove());for(const url of urls)URL.revokeObjectURL(url);items.clear();chunks.clear();delete window.__CODEX_WALLPAPERS_PUBLIC__;}
   const api={append,register,select,open,close,dispose,ids:()=>[...items.keys()],status:()=>({count:items.size,selected:prefs.selected,enabled:prefs.enabled,media:!!current,profileButton:!!document.querySelector('[data-cw-menu]'),settings:{...prefs}}),async ready(){renderControls();updateFilter();if(items.has(prefs.selected))await select(prefs.selected);else{notice(items.size?'Elegí tu primer fondo.':'Biblioteca vacía. Agregá tu primer fondo con el agente.');}return api.status();}};
   window.__CODEX_WALLPAPERS_PUBLIC__=api;renderControls();return 'installed';
 })

@@ -24,7 +24,7 @@ La interfaz avisa al seleccionar si el medio requiere ampliación. El CSS se ada
 
 El importador copia el archivo sin reducir resolución ni FPS. Para videos muy pesados, pedir al agente una **copia** optimizada a 30 FPS suele ser una opción práctica; nunca convertir encima del original. El límite actual es 128 MiB por archivo y 512 MiB para cargar una biblioteca completa por ventana. Cada ventana tiene su propia copia en memoria, de modo que una biblioteca grande y varias ventanas pueden consumir bastante RAM y GPU.
 
-La miniatura es una imagen pequeña para el selector; no es el fondo aplicado. La paleta automática se obtiene del primer fotograma, no cambia de color a cada fotograma. Brillo y superficies oscuras ayudan a leer, pero los colores manuales requieren comprobación visual.
+La miniatura es una imagen pequeña para el selector; no es el fondo aplicado. La paleta automática detecta una región de color del primer fotograma y adapta acentos y superficies oscuras; los fondos neutros producen una paleta neutra. No cambia a cada fotograma. Brillo y superficies oscuras ayudan a leer, pero los colores manuales requieren comprobación visual.
 
 ## Quitar un medio
 

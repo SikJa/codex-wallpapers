@@ -38,7 +38,23 @@ export async function atomicJSON(file, data) {
 }
 export function paletteFromRGB([r, g, b]) {
   const hex = a => '#' + a.map(v => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
-  return { accent: hex([r,g,b].map(v => 145 + v * .36)), surface: hex([r,g,b].map(v => 12 + v * .035)), sidebar: hex([r,g,b].map(v => 10 + v * .04)), text: '#e8eaf0' };
+  const max=Math.max(r,g,b),min=Math.min(r,g,b);
+  if(max-min<8)return {accent:'#bdc2cb',surface:'#121418',sidebar:'#101216',text:'#e8eaf0'};
+  const color=[r,g,b].map(v=>(v-min)/(max-min));
+  return {accent:hex(color.map(v=>150+v*70)),surface:hex(color.map(v=>15+v*10)),sidebar:hex(color.map(v=>12+v*10)),text:'#e8eaf0'};
+}
+export function paletteFromPixels(bytes) {
+  // Prefer a meaningful colored region over the nearly black average of a wallpaper.
+  const bins=Array.from({length:18},()=>({weight:0,r:0,g:0,b:0}));
+  for(let i=0;i+2<bytes.length;i+=3){
+    const [r,g,b]=[bytes[i],bytes[i+1],bytes[i+2]],max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min;
+    if(max<28||d<12||d/max<.18)continue;
+    const h=((max===r?(g-b)/d:max===g?(b-r)/d+2:(r-g)/d+4)+6)%6;
+    const weight=(d/max)**2*(.4+.6*max/255),bin=bins[Math.floor(h*3)];
+    bin.weight+=weight;bin.r+=r*weight;bin.g+=g*weight;bin.b+=b*weight;
+  }
+  const best=bins.reduce((a,b)=>a.weight>b.weight?a:b);
+  return best.weight<bytes.length/3*.001?paletteFromRGB([0,0,0]):paletteFromRGB([best.r/best.weight,best.g/best.weight,best.b/best.weight]);
 }
 export async function importMedia(source, { root = dataRoot(), title, ffmpeg = process.env.FFMPEG || 'ffmpeg', ffprobe = process.env.FFPROBE || 'ffprobe' } = {}) {
   const file = await fs.realpath(path.resolve(source)), extension = path.extname(file).toLowerCase(), mime = formats[extension];
@@ -62,9 +78,10 @@ export async function importMedia(source, { root = dataRoot(), title, ffmpeg = p
     const destination = safePath(root, output), thumb = safePath(root, preview);
     await fs.writeFile(destination, bytes, { flag:'wx' }); created.push(destination);
     created.push(thumb);
-    await exec(ffmpeg, ['-v','error','-nostdin','-y','-i',destination,'-frames:v','1','-vf','scale=480:270:force_original_aspect_ratio=decrease','-q:v','3',thumb], { timeout: 30000 });
-    const sample = await exec(ffmpeg, ['-v','error','-nostdin','-i',thumb,'-frames:v','1','-vf','scale=1:1','-f','rawvideo','-pix_fmt','rgb24','pipe:1'], { encoding:'buffer', timeout:10000, maxBuffer:1024 });
-    const item = { id, title:(title || path.basename(file,extension)).slice(0,120), kind:mime.startsWith('video/')?'video':'image', mime, file:output, preview, size:bytes.length, sha256:hash, width:stream.width, height:stream.height, duration:Number(probe.format?.duration)||null, palette:paletteFromRGB([...sample.stdout.subarray(0,3)]) };
+    const seek=mime.startsWith('video/')&&Number(probe.format?.duration)>2?['-ss','1']:[];
+    await exec(ffmpeg, ['-v','error','-nostdin','-y',...seek,'-i',destination,'-frames:v','1','-vf','scale=480:270:force_original_aspect_ratio=decrease','-q:v','3',thumb], { timeout: 30000 });
+    const sample = await exec(ffmpeg, ['-v','error','-nostdin','-i',thumb,'-frames:v','1','-vf','scale=64:64','-f','rawvideo','-pix_fmt','rgb24','pipe:1'], { encoding:'buffer', timeout:10000, maxBuffer:16384 });
+    const item = { id, title:(title || path.basename(file,extension)).slice(0,120), kind:mime.startsWith('video/')?'video':'image', mime, file:output, preview, size:bytes.length, sha256:hash, width:stream.width, height:stream.height, duration:Number(probe.format?.duration)||null, palette:paletteFromPixels(sample.stdout) };
     library.items.push(item); await atomicJSON(path.join(root,'library.json'),library); return item;
   } catch (e) { for(const p of created) await fs.rm(p,{force:true}); throw e; }
   finally { await lock.close(); await fs.rm(path.join(root,'import.lock'),{force:true}); }

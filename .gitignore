@@ -13,3 +13,7 @@ test-results/
 *.webp
 .env*
 !.env.example
+!docs/assets/hero.jpg
+!docs/assets/picker.jpg
+!docs/assets/details.jpg
+!docs/assets/gallery-*.jpg

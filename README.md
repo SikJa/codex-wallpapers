@@ -1,71 +1,55 @@
-# Codex Wallpapers
+<p align="center">
+  <a href="README.md"><img src="docs/assets/language-en.svg" alt="English"></a>
+  <a href="README.es.md"><img src="docs/assets/language-es.svg" alt="Español"></a>
+  <a href="README.pt-BR.md"><img src="docs/assets/language-pt.svg" alt="Português do Brasil"></a>
+</p>
 
-Fondos propios y una apariencia que acompaña al fondo en Codex Desktop para Windows. Abrí tu **perfil → Fondos**, debajo de Configuración, para elegir un fondo y ajustar el aspecto. La biblioteca viene **vacía**.
+![Codex Wallpapers — Your space. Your Codex.](docs/assets/hero.jpg)
 
-**Proyecto experimental e independiente. No es un plugin oficial ni está aprobado por OpenAI.** Utiliza el puerto de depuración local de Electron para aplicar CSS y JavaScript en memoria. Una actualización puede romper la compatibilidad; no podemos garantizar que este método esté permitido por las condiciones del servicio ni que esté libre de restricciones sobre la cuenta. No lo instales si necesitás esa garantía. Ver [seguridad y límites](docs/SECURITY.md).
+**Make Codex feel like your space.** Pick your own image or video and let the colors follow. Change wallpapers from **Profile → Fondos**, then adjust brightness, transparency and rounded corners.
 
-## Qué incluye
+## One interface. A different mood.
 
-- Imágenes JPG, PNG y WebP; videos MP4 y WebM sin sonido.
-- Selector negro con búsqueda, filtros, vista previa y biblioteca propia.
-- Paleta automática basada en el fondo, o colores manuales.
-- Brillo, opacidad de superficies, movimiento y esquinas configurables.
-- Sidebar, compositor y Configuración redondeados; Configuración conserva el fondo negro.
-- Nuevo chat conserva su distribución original y las sugerencias tienen transparencia ajustable.
-- Encuadre sin deformación: llenar recorta bordes; completo puede mostrar franjas.
-- Preferencias compartidas entre ventanas y aplicación en ventanas nuevas, incluido Ctrl+Shift+N.
-- Acceso directo de Windows con identidad de Codex e icono oficial obtenido de la instalación local.
+These previews use wallpapers from a personal collection with sample content. The accent, sidebar and composer colors are generated from each wallpaper — look at the palette swatches below the message. Click any image for a closer look.
 
-No incluye efectos en enviar/detener, halos, contador de uso, fondos de otros usuarios, iconos oficiales redistribuidos ni integración con la cuenta de Steam. No modifica los archivos de instalación de Codex, sus conversaciones o credenciales. Sí agrega archivos locales, un acceso directo y preferencias propias.
+| Glass Ribbons | MacOS Style |
+| :---: | :---: |
+| [![Glass Ribbons](docs/assets/gallery-glass-ribbons.jpg)](docs/assets/gallery-glass-ribbons.jpg) | [![MacOS Style](docs/assets/gallery-macos-style.jpg)](docs/assets/gallery-macos-style.jpg) |
+| **MacOs M3** | **Mac Baconai** |
+| [![MacOs M3](docs/assets/gallery-macos-m3.jpg)](docs/assets/gallery-macos-m3.jpg) | [![Mac Baconai](docs/assets/gallery-mac-baconai.jpg)](docs/assets/gallery-mac-baconai.jpg) |
+| **Red Torii** | **CHR0NIC** |
+| [![Red Torii](docs/assets/gallery-red-torii.jpg)](docs/assets/gallery-red-torii.jpg) | [![CHR0NIC](docs/assets/gallery-chronic.jpg)](docs/assets/gallery-chronic.jpg) |
 
-## Instalación
+The gallery is a showcase, not a bundled collection. [Wallpaper credits](docs/assets/README.md).
 
-Requisitos: Windows 10/11, Codex Desktop instalado desde Microsoft Store, **Node.js 22 o posterior**, y `ffmpeg`/`ffprobe` en PATH para importar medios. No hay dependencias npm de ejecución. La versión candidata figura en [compatibility.json](compatibility.json); otras versiones se abren con aspecto normal.
+## Your collection, one click away
 
-Pedile al agente que lea [AGENTS.md](AGENTS.md) y [la guía del agente](docs/AGENT.md). También podés ejecutar desde PowerShell, ubicado en este repo:
+![The wallpaper picker with search, previews and appearance controls](docs/assets/picker.jpg)
+
+- **Your media:** JPG, PNG, WebP, MP4 and WebM. Videos loop silently.
+- **Your colors:** automatic palettes or manual colors, with adjustable opacity and corners.
+- **Your layout:** fit without stretching, saved preferences and support for additional windows.
+
+## Get started
+
+You need Codex Desktop for Windows, Node.js 22+, and FFmpeg/ffprobe for importing files. From this repository, run:
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1 -Check
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1
 ```
 
-El instalador crea **Codex Wallpapers** en Inicio. No abre ni cierra Codex. Guardá lo que estés haciendo, cerrá Codex normalmente cuando quieras y abrilo desde ese acceso. Si Codex ya estaba abierto, el lanzador lo deja intacto: no se conecta a una sesión normal ni la reinicia.
+Open **Codex Wallpapers** from Start when you next open Codex. Pin **that shortcut** to the taskbar: it uses the locally installed official icon and launches the same Codex app with personalization. The original shortcut stays available. [Shortcut details (ES)](docs/WINDOWS.md).
 
-**Para la barra de tareas**, leé [acceso directo e icono](docs/WINDOWS.md). Anclar el acceso original puede hacer que Codex arranque sin personalización.
+Attach an image or video to your Codex agent and ask:
 
-## Agregar y cambiar fondos
+> Import this wallpaper into codex-wallpapers, preserve the original and check its resolution. Don't restart Codex without asking me.
 
-Adjuntá un archivo local en Codex y pedí:
+Then choose it in **Profile → Fondos**. The library starts empty. **Wallpaper Engine on Steam** is a suggested source; use a local image or video you have permission to use. Workshop scenes need an image or a recorded/exported video. [Media guide (ES)](docs/MEDIA.md).
 
-> Importá este fondo en codex-wallpapers. Conservá el original, comprobá su resolución y cargalo en la biblioteca. No reinicies Codex sin preguntarme.
+## Safety & status
 
-El agente importa una copia y refresca las ventanas abiertas. Después cambiás de fondo vos mismo en **perfil → Fondos**; no necesitás abrir una página ni levantar un servidor manualmente. El auxiliar de ventanas funciona en segundo plano mientras esa sesión de Codex está abierta.
+**Independent, experimental project.** It applies CSS/JavaScript through local Electron debugging. It is not an official plugin or approved by OpenAI; compatibility and freedom from account restrictions are not guaranteed. [Security & scope](docs/SECURITY.en.md).
 
-Recomendamos **Wallpaper Engine en Steam como fuente**, cuando el autor permita usar el medio. Las escenas de Wallpaper Engine no son videos: un `scene.pkg` requiere su motor. Este proyecto no ejecuta escenas ni scripts del Workshop. Usá una imagen base o un video que puedas obtener/exportar o capturar con permiso; los efectos de una escena no aparecen en una imagen estática. Ver [medios y resolución](docs/MEDIA.md).
+**Preview:** isolated tests and Windows shortcut checks pass. A clean-install startup still needs manual validation. If personalization fails, Codex stays open; the project never restarts it to recover.
 
-Para importar manualmente:
-
-```powershell
-node .\src\cli.mjs import "D:\Fondos\mi-fondo.mp4" --title "Mi fondo"
-node .\src\cli.mjs list
-node .\src\apply.mjs
-```
-
-`apply.mjs` requiere una sesión abierta por el acceso personalizado. Solo usa su endpoint verificado, no abre Codex. Sin esa sesión, el medio queda guardado para la próxima apertura.
-
-## Estado del proyecto
-
-Versión inicial **0.1.0 preview**. Las pruebas aisladas cubren importación real, integridad, interfaz, cambio transaccional de medios, dos ventanas y preferencias. La identidad del paquete y la compilación del acceso se comprueban en Windows. El instalador distribuible todavía necesita una prueba manual de arranque completo en una instalación limpia; la suite aislada no sustituye esa prueba.
-
-Ver [verificación](docs/TESTING.md), [actualizaciones y recuperación](docs/UPDATES.md) y [seguridad](docs/SECURITY.md). Ningún componente debe cerrar, matar o reiniciar Codex para recuperarse de un fallo.
-
-## Desarrollo
-
-```powershell
-node --test tests/core.test.mjs
-node scripts/check.mjs
-```
-
-Las pruebas de UI requieren Playwright instalado por separado; instrucciones en [TESTING.md](docs/TESTING.md). Los medios de prueba se generan localmente, no vienen en el repo.
-
-Licencia MIT para el código de este proyecto. Las marcas, iconos de Codex y medios importados conservan sus propios derechos.
+[Agent guide (ES)](docs/AGENT.md) · [Updates (ES)](docs/UPDATES.md) · [Tests (ES)](docs/TESTING.md) · [MIT license for code](LICENSE)

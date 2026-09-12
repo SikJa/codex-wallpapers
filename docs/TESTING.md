@@ -13,6 +13,7 @@ La suite de interfaz requiere `ffmpeg`, `ffprobe` y Playwright, instalado fuera 
 npm install --no-save --package-lock=false playwright
 npx playwright install chromium
 node tests/ui.mjs
+node tests/usage.mjs
 ```
 
 Con una instalación existente, definir `PLAYWRIGHT_MODULE` como ruta absoluta al módulo `playwright/index.mjs` y opcionalmente `CW_TEST_BROWSER` como ruta de Chrome/Chromium. La prueba usa un navegador aislado y un servidor efímero en loopback. No se conecta a Codex.
@@ -34,3 +35,9 @@ Se generan PNG/video sintéticos en `test-results`, se importan con el código r
 - Acceso anclado: icono nítido, agrupación correcta y apertura de la misma aplicación oficial.
 
 La suite automatizada no demuestra por sí sola compatibilidad con una versión nueva de Codex. El primer lanzamiento distribuible sigue en preview hasta completar este recorrido en una instalación limpia. No reiniciar una sesión del usuario para completar esta lista sin pedir permiso.
+
+## Capturas de documentacion
+
+`node scripts/showcase.mjs <manifest-local.json>` renderiza el runtime real sobre una interfaz de demostracion. El manifest es un array de `{file,title,slug,source}` y debe quedar fuera de Git. Las fotos resultantes van a `docs/assets`; los originales y la biblioteca temporal quedan fuera del codigo instalado. Revisar cada captura antes de publicarla y registrar sus fuentes. Los enlaces de idioma de los README cambian la documentacion; la interfaz del selector sigue en español.
+
+`tests/usage.mjs` usa una consulta nativa simulada y reloj controlado para verificar suscripciones, refresco cada 30 segundos, pausa en segundo plano, expiracion de datos, idioma y limpieza. No accede a ninguna cuenta.

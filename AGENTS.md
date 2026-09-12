@@ -2,7 +2,7 @@
 
 Leé README.md y docs/AGENT.md antes de instalar o importar.
 
-- Alcance: wallpapers, selector Perfil > Fondos y apariencia relacionada. No incorporar efectos de enviar/detener, medidores de uso ni otras modificaciones personales.
+- Alcance: wallpapers, selector Perfil > Fondos, apariencia y el indicador de uso solicitado. Mantener los efectos del compositor fuera de este proyecto.
 - La biblioteca inicial debe estar vacía. Nunca incluir medios, datos de cuenta, rutas personales, registros o archivos de una instalación local en Git.
 - No cerrar, matar, recargar ni reiniciar Codex sin autorización explícita para esa acción. Una autorización para instalar o importar no implica autorización para reiniciar.
 - Ante un fallo, dejar Codex abierto. Nunca crear bucles de reinicio, modificar el paquete instalado o reemplazar binarios de Codex.
@@ -12,4 +12,4 @@ Leé README.md y docs/AGENT.md antes de instalar o importar.
 - Mantener el diseño nativo del nuevo chat. No fijar posiciones del compositor que tapen las sugerencias.
 - El botón Fondos pertenece al menú de perfil debajo de Configuración; nunca a la esquina superior de la ventana.
 - No ampliar la lista de versiones compatibles sin evidencia y pruebas. Distinguir pruebas aisladas de validación real en Codex.
-- No publicar medios de prueba, capturas reales con conversaciones, iconos oficiales o ejecutables compilados.
+- Las capturas de documentacion pueden usar contenido de demostracion y arte propio, bajo docs/assets. No publicar fondos personales, conversaciones reales, iconos oficiales o ejecutables compilados.

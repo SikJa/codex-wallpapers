@@ -9,7 +9,7 @@ import { Session, targets } from './cdp.mjs';
 const exec=promisify(execFile),root=dataRoot();
 const ownFile=fileURLToPath(import.meta.url),repo=path.dirname(path.dirname(ownFile));
 const read=p=>fs.readFile(path.join(repo,p),'utf8');
-export async function payload(){return `${await read('src/runtime.js')}(${JSON.stringify({appearanceCSS:await read('src/appearance.css'),modalCSS:await read('src/modal.css')})})`;}
+export async function payload(){return `${await read('src/runtime.js')}(${JSON.stringify({appearanceCSS:await read('src/appearance.css'),modalCSS:await read('src/modal.css')})});\n${await read('src/usage.js')}();`;}
 export async function applyWindow(session, library, base, code){
   const owner=crypto.randomUUID();
   const acquired=await session.evaluate(`(()=>{if(window.__CW_TRANSFER_LOCK__?.until>Date.now())return false;window.__CW_TRANSFER_LOCK__={owner:${JSON.stringify(owner)},until:Date.now()+120000};return true})()`);
