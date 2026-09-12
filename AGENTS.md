@@ -2,6 +2,8 @@
 
 Leé README.md y docs/AGENT.md antes de instalar o importar.
 
+- La interfaz distribuida debe estar en inglés: botón "Wallpapers", modal, ayuda, estados, errores e indicador de uso, independientemente del idioma de Codex. Conservar los selectores de menús nativos en otros idiomas para compatibilidad.
+
 - Alcance: wallpapers, selector Perfil > Fondos, apariencia y el indicador de uso solicitado. Mantener los efectos del compositor fuera de este proyecto.
 - La biblioteca inicial debe estar vacía. Nunca incluir medios, datos de cuenta, rutas personales, registros o archivos de una instalación local en Git.
 - No cerrar, matar, recargar ni reiniciar Codex sin autorización explícita para esa acción. Una autorización para instalar o importar no implica autorización para reiniciar.

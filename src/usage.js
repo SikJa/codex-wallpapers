@@ -10,12 +10,7 @@
   @media(prefers-reduced-motion:reduce){[data-cw-usage]{animation:none;background:none;-webkit-text-fill-color:currentColor}}`;
   document.head.append(style);
   let client = null, unsubscribe = null, disposed = false, pending = false;
-  const lang = () => (document.documentElement.lang || navigator.language).slice(0, 2);
-  const labels = () => ({
-    es: ['restante', 'Uso no disponible', 'Actualizado automáticamente'],
-    pt: ['restante', 'Uso indisponível', 'Atualizado automaticamente'],
-    en: ['left', 'Usage unavailable', 'Updated automatically'],
-  }[lang()] || ['left', 'Usage unavailable', 'Updated automatically']);
+  const labels = () => ['left', 'Usage unavailable', 'Updated automatically'];
   function locate() {
     const el = document.querySelector('main[data-app-shell-main-surface]');
     let fiber = el?.[Object.keys(el).find(k => k.startsWith('__reactFiber$'))];

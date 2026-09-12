@@ -20,7 +20,10 @@ let browser;const results=[];
 try{
  browser=await pw.chromium.launch({headless:true,...(process.env.CW_TEST_BROWSER?{executablePath:process.env.CW_TEST_BROWSER}:{})});const context=await browser.newContext({viewport:{width:1200,height:820}});const page=await context.newPage();const url=`http://127.0.0.1:${server.address().port}/`;await page.goto(url);const code=await payload();
  await applyWindow({evaluate:x=>page.evaluate(x)},{schema:1,items:[]},data,code);
- assert.equal(await page.locator('#cw-media').count(),0);await page.locator('#profile').click();await page.locator('[data-cw-menu]').click();await page.locator('#empty').waitFor({state:'visible'});await page.screenshot({path:path.join(out,'empty-library.png')});results.push('Empty library; profile button; native dialog');
+ assert.equal(await page.locator('#cw-media').count(),0);await page.locator('#profile').click();assert.equal(await page.locator('[data-cw-menu]').textContent(),'Wallpapers');await page.locator('[data-cw-menu]').click();await page.locator('#empty').waitFor({state:'visible'});await page.screenshot({path:path.join(out,'empty-library.png')});results.push('Empty library; profile button; native dialog');
+ assert.equal(await page.locator('#heading').textContent(),'Your wallpapers');
+ assert.equal(await page.locator('#search').getAttribute('placeholder'),'Search wallpapers');
+ assert.equal(await page.locator('#toggle').textContent(),'Disable wallpaper');
  await page.keyboard.press('Escape');
  await applyWindow({evaluate:x=>page.evaluate(x)},await readLibrary(data),data,code);
  await page.evaluate(id=>window.__CODEX_WALLPAPERS_PUBLIC__.select(id),image.id);

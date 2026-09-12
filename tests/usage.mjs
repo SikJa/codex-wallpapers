@@ -24,7 +24,7 @@ try{
  await page.evaluate(()=>Object.defineProperty(document,'hidden',{configurable:true,get:()=>true}));
  await page.clock.fastForward(150000);assert.equal(await page.evaluate(()=>window.calls),1);assert.equal(await page.locator('[data-cw-usage]').textContent(),'—');
  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>false});document.documentElement.lang='pt-BR';window.dispatchEvent(new Event('focus'))});
- await page.waitForFunction(()=>document.querySelector('[data-cw-usage]').textContent==='35% restante');assert.equal(await page.evaluate(()=>window.calls),2);
+ await page.waitForFunction(()=>document.querySelector('[data-cw-usage]').textContent==='35% left');assert.equal(await page.evaluate(()=>window.calls),2);
  await page.evaluate(()=>window.__CW_USAGE__.dispose());await page.clock.fastForward(90000);assert.equal(await page.locator('[data-cw-usage]').count(),0);assert.equal(await page.evaluate(()=>window.calls),2);assert.equal(await page.evaluate(()=>window.subscribers.size),0);
- console.log('PASS: native usage events, automatic 30s refresh, hidden pause, stale data, locale and cleanup.');
+ console.log('PASS: native usage events, automatic 30s refresh, hidden pause, stale data, English labels across host locales and cleanup.');
 }finally{await browser.close()}
