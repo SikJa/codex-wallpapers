@@ -2,6 +2,7 @@
 param([string]$Repository)
 $ErrorActionPreference='Stop'
 . "$PSScriptRoot/identity.ps1"
+. "$PSScriptRoot/port.ps1"
 if(-not $Repository){$Repository=Split-Path $PSScriptRoot -Parent}
 $dataRoot=if($env:CODEX_WALLPAPERS_DATA){$env:CODEX_WALLPAPERS_DATA}else{Join-Path $env:LOCALAPPDATA 'CodexWallpapers'}
 New-Item -ItemType Directory -Path $dataRoot -Force|Out-Null
@@ -15,8 +16,9 @@ try {
  if((Get-CWProcesses $app).Count){$record.state='already-open';return}
  $node=Get-Command node.exe -ErrorAction SilentlyContinue
  $versions=(Get-Content (Join-Path $Repository 'compatibility.json') -Raw|ConvertFrom-Json).windowsPackages
- $port=9348
- $supported=$node -and ($versions -contains $app.Version) -and -not @(Get-NetTCPConnection -State Listen -LocalPort $port -ErrorAction SilentlyContinue).Count
+ $port=Get-CWAvailablePort
+ $record.port=$port
+ $supported=$node -and ($versions -contains $app.Version) -and $null -ne $port
  if($supported){try{& $node.Source (Join-Path $Repository 'src/apply.mjs') --check 1> (Join-Path $dataRoot 'preflight.log') 2> (Join-Path $dataRoot 'preflight-error.log');$supported=$LASTEXITCODE -eq 0}catch{$supported=$false}}
  $record.launches=1
  if(-not $supported){Start-CWPackage $app;$record.state='opened-normal';return}

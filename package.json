@@ -1,10 +1,12 @@
 {
   "name": "codex-wallpapers",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "Unofficial, local wallpaper customization for Codex Desktop on Windows",
   "type": "module",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "test": "node --test tests/core.test.mjs",
     "test:ui": "node tests/ui.mjs",

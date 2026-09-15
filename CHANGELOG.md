@@ -1,5 +1,12 @@
 # Cambios
 
+## 0.1.2 — Preview
+
+- Add Codex Windows 26.908.9136.0 to the preview compatibility list after checking native shell, profile and usage markers.
+- Select an available loopback port when the preferred port is occupied; keep package and browser identity verification.
+- English wallpaper menu, dialog, help and usage labels.
+- Add an isolated occupied-port regression check. Clean-install manual validation remains pending.
+
 ## 0.1.1 — Preview
 
 - Portada visual y galería con seis fondos y sus paletas reales.

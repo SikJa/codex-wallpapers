@@ -1,6 +1,9 @@
 {
   "schema": 1,
-  "windowsPackages": ["26.908.4834.0"],
+  "windowsPackages": [
+    "26.908.4834.0",
+    "26.908.9136.0"
+  ],
   "status": "preview",
-  "note": "Selectors originate from this locally verified Codex version. The distributable must also pass a clean-install manual test; see docs/TESTING.md."
+  "note": "Preview. Shell/profile/usage markers checked in both official packages. Automated isolated tests pass; clean-install manual validation remains required."
 }
