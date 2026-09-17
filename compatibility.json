@@ -2,8 +2,9 @@
   "schema": 1,
   "windowsPackages": [
     "26.908.4834.0",
-    "26.908.9136.0"
+    "26.908.9136.0",
+    "26.911.7940.0"
   ],
   "status": "preview",
-  "note": "Preview. Shell/profile/usage markers checked in both official packages. Automated isolated tests pass; clean-install manual validation remains required."
+  "note": "Preview. Native shell, profile-menu and usage-query markers checked in the listed official Windows packages. Isolated UI tests pass. See docs/TESTING.md for the remaining clean-install manual checks."
 }

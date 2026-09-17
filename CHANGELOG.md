@@ -1,5 +1,11 @@
 # Cambios
 
+## 0.1.3 — Preview
+
+- Add Codex Windows 26.911.7940.0 after checking native shell, profile-menu and usage-query markers in the official package.
+- Preserve English UI, adaptive palettes, rounded surfaces and automatic usage refresh.
+- Isolated UI and launcher tests pass; clean-install manual validation is still required.
+
 ## 0.1.2 — Preview
 
 - Add Codex Windows 26.908.9136.0 to the preview compatibility list after checking native shell, profile and usage markers.
