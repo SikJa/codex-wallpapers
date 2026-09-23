@@ -1,5 +1,11 @@
 # Cambios
 
+## 0.1.4 — Preview
+
+- Add Codex Windows 26.917.8451.0 after checking native shell, profile-menu and usage-query markers in the official package.
+- Keep the local wallpaper picker and account usage badge compatible with the current shell markers.
+- Isolated tests pass; clean-install manual validation remains pending.
+
 ## 0.1.3 — Preview
 
 - Add Codex Windows 26.911.7940.0 after checking native shell, profile-menu and usage-query markers in the official package.

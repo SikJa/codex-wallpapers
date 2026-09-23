@@ -3,8 +3,9 @@
   "windowsPackages": [
     "26.908.4834.0",
     "26.908.9136.0",
-    "26.911.7940.0"
+    "26.911.7940.0",
+    "26.917.8451.0"
   ],
   "status": "preview",
-  "note": "Preview. Native shell, profile-menu and usage-query markers checked in the listed official Windows packages. Isolated UI tests pass. See docs/TESTING.md for the remaining clean-install manual checks."
+  "note": "Preview. Native shell, profile-menu and usage-query markers checked in the listed official packages. Isolated UI tests pass. See docs/TESTING.md for remaining clean-install manual checks."
 }
