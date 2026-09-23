@@ -17,6 +17,28 @@ export async function applyWindow(session, library, base, code){
   try{return await transferWindow(session,library,base,code);}
   finally{await session.evaluate(`(()=>{if(window.__CW_TRANSFER_LOCK__?.owner===${JSON.stringify(owner)})delete window.__CW_TRANSFER_LOCK__;})()`).catch(()=>{});}
 }
+async function transferRequested(session, library, base){
+  const requested=await session.evaluate('window.__CODEX_WALLPAPERS_PUBLIC__.takeRequests()');
+  let transferred=0;
+  for(const id of requested){
+    const item=library.items.find(candidate=>candidate.id===id);
+    if(!item){
+      await session.evaluate(`window.__CODEX_WALLPAPERS_PUBLIC__.reject(${JSON.stringify(id)},'Wallpaper unavailable')`).catch(()=>{});
+      continue;
+    }
+    try{
+      const bytes=await fs.readFile(safePath(base,item.file));
+      if(bytes.length!==item.size||crypto.createHash('sha256').update(bytes).digest('hex')!==item.sha256)throw Error('Imported file changed: '+item.id);
+      for(let off=0;off<bytes.length;off+=192*1024)await session.evaluate(`window.__CODEX_WALLPAPERS_PUBLIC__.append(${JSON.stringify(item.id)},${JSON.stringify(bytes.subarray(off,off+192*1024).toString('base64'))})`);
+      await session.evaluate(`window.__CODEX_WALLPAPERS_PUBLIC__.supply(${JSON.stringify(item.id)})`);
+      transferred++;
+    }catch(error){
+      await session.evaluate(`window.__CODEX_WALLPAPERS_PUBLIC__.reject(${JSON.stringify(id)},${JSON.stringify(error.message)})`).catch(()=>{});
+      throw error;
+    }
+  }
+  return transferred;
+}
 async function transferWindow(session, library, base, code){
   const exists=await session.evaluate('!!window.__CODEX_WALLPAPERS_PUBLIC__');
   if(!exists){
@@ -27,14 +49,13 @@ async function transferWindow(session, library, base, code){
     const ids=await session.evaluate('window.__CODEX_WALLPAPERS_PUBLIC__.ids()');
     for(const item of library.items){
       if(ids.includes(item.id))continue;
-      const bytes=await fs.readFile(safePath(base,item.file));
-      if(bytes.length!==item.size||crypto.createHash('sha256').update(bytes).digest('hex')!==item.sha256)throw Error('Imported file changed: '+item.id);
-      for(let off=0;off<bytes.length;off+=384*1024)await session.evaluate(`window.__CODEX_WALLPAPERS_PUBLIC__.append(${JSON.stringify(item.id)},${JSON.stringify(bytes.subarray(off,off+384*1024).toString('base64'))})`);
       const thumbnail=(await fs.readFile(safePath(base,item.preview))).toString('base64');
       const {file,preview,sha256,...meta}=item;
-      await session.evaluate(`window.__CODEX_WALLPAPERS_PUBLIC__.register(${JSON.stringify(meta)},${JSON.stringify(thumbnail)})`);
+      await session.evaluate(`window.__CODEX_WALLPAPERS_PUBLIC__.catalog(${JSON.stringify(meta)},${JSON.stringify(thumbnail)})`);
     }
-    const status=await session.evaluate('window.__CODEX_WALLPAPERS_PUBLIC__.ready()');
+    await session.evaluate('window.__CODEX_WALLPAPERS_PUBLIC__.ready()');
+    await transferRequested(session,library,base);
+    const status=await session.evaluate('window.__CODEX_WALLPAPERS_PUBLIC__.status()');
     await session.evaluate('clearTimeout(window.__CW_INSTALL_GUARD__);delete window.__CW_INSTALL_GUARD__');
     return status;
   } catch(e){
@@ -63,7 +84,7 @@ async function run(){
       let list;
       try{list=await targets(endpoint);failures=0;}catch(e){if(!watch||++failures>=3)throw e;await new Promise(r=>setTimeout(r,2000));continue;}
       const library=await readLibrary();
-      if(library.items.reduce((n,i)=>n+i.size,0)>512*1024*1024)throw Error('Library exceeds 512 MiB; reduce it before loading all windows.');
+      const libraryGeneration=library.items.map(item=>`${item.id}:${item.sha256}`).join('|');
       for(const id of seen.keys())if(!list.some(t=>t.id===id))seen.delete(id);
       for(const t of list){
         const s=new Session(t.webSocketDebuggerUrl);try{
@@ -71,9 +92,15 @@ async function run(){
           const probe=await s.evaluate('({main:!!document.querySelector("main[data-app-shell-main-surface]"),url:location.href,time:performance.timeOrigin,present:!!window.__CODEX_WALLPAPERS_PUBLIC__})');
           if(!probe.main)continue;
           const generation=String(probe.time);
-          if(watch&&seen.get(t.id)===generation)continue;
-          seen.set(t.id,generation); // One attempt per document, no retry loops.
-          const status=await applyWindow(s,library,root,code);
+          const previous=seen.get(t.id),needsInstall=!previous||previous.generation!==generation||previous.libraryGeneration!==libraryGeneration||!probe.present;
+          let status;
+          if(needsInstall){
+            seen.set(t.id,{generation,libraryGeneration}); // One install attempt per document/library generation.
+            status=await applyWindow(s,library,root,code);
+          }else{
+            await transferRequested(s,library,root);
+            status=await s.evaluate('window.__CODEX_WALLPAPERS_PUBLIC__.status()');
+          }
           await writeStatus({state:'ready',target:t.id,...status});first=false;
         }catch(e){await writeStatus({state:'window-failed',target:t.id,error:e.message});if(!watch)throw e;}
         finally{s.close();}

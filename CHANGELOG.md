@@ -1,5 +1,12 @@
 # Cambios
 
+## 0.1.6 — Preview
+
+- Stop copying the entire wallpaper library into every Codex renderer.
+- Send lightweight metadata and thumbnails first, then transfer only the wallpaper selected by that window.
+- Release the previous full-size media object after a successful switch and defer animated media while a window is hidden.
+- Add a regression test proving that unselected media files are never read or transferred to the renderer.
+
 ## 0.1.5 — Preview
 
 - Refresh the usage badge from the current account-scoped native rate-limit query.

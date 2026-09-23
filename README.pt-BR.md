@@ -29,6 +29,7 @@ A galeria mostra exemplos; os fundos não vêm incluídos. [Créditos dos papéi
 - **Seus arquivos:** JPG, PNG, WebP, MP4 e WebM. Os vídeos ficam em loop, sem som.
 - **Suas cores:** paleta automática ou manual, opacidade e cantos ajustáveis.
 - **Seu espaço:** enquadramento sem distorção, preferências salvas e suporte a várias janelas.
+- **Memória controlada:** cada janela recebe as miniaturas do catálogo e apenas o wallpaper completo em uso. Janelas ocultas aguardam antes de carregar animações.
 
 ## Começar
 
@@ -50,6 +51,6 @@ Depois, escolha o fundo em **Perfil → Fondos**. A biblioteca começa vazia. Re
 
 **Projeto independente e experimental.** Aplica CSS/JavaScript por meio da depuração local do Electron. Não é um plugin oficial nem foi aprovado pela OpenAI; não há garantia de compatibilidade ou de ausência de restrições na conta. [Segurança e escopo](docs/SECURITY.pt-BR.md).
 
-**Preview:** os testes isolados e as verificações do atalho do Windows passaram. A inicialização em uma instalação limpa ainda precisa de validação manual. Se a personalização falhar, o Codex continua aberto; o projeto nunca reinicia o aplicativo para tentar se recuperar.
+**Preview:** os testes isolados de transferência, interface e atalho do Windows passaram. A biblioteca completa não é mais copiada para cada renderer. A inicialização em uma instalação limpa ainda precisa de validação manual. Se a personalização falhar, o Codex continua aberto; o projeto nunca reinicia o aplicativo para tentar se recuperar.
 
 [Guia do agente (ES)](docs/AGENT.md) · [Atualizações (ES)](docs/UPDATES.md) · [Testes (ES)](docs/TESTING.md) · [Licença MIT do código](LICENSE)

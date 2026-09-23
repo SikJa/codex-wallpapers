@@ -29,6 +29,7 @@ La galería muestra ejemplos; los fondos no vienen incluidos. [Créditos de los 
 - **Tus archivos:** JPG, PNG, WebP, MP4 y WebM. Los videos se repiten sin sonido.
 - **Tus colores:** paleta automática o manual, opacidad y esquinas ajustables.
 - **Tu espacio:** encuadre sin estirar, preferencias guardadas y soporte para varias ventanas.
+- **Memoria controlada:** cada ventana recibe las miniaturas del catálogo y solamente el fondo completo que está usando. Las ventanas ocultas esperan antes de cargar animaciones.
 
 ## Empezar
 
@@ -50,6 +51,6 @@ Después elegilo en **Perfil → Fondos**. La biblioteca empieza vacía. Recomen
 
 **Proyecto independiente y experimental.** Aplica CSS/JavaScript mediante depuración local de Electron. No es un plugin oficial ni está aprobado por OpenAI; no se garantiza compatibilidad ni ausencia de restricciones sobre la cuenta. [Seguridad y alcance](docs/SECURITY.md).
 
-**Preview:** pasaron las pruebas aisladas y las comprobaciones del acceso de Windows. Falta validar manualmente el arranque en una instalación limpia. Si la personalización falla, Codex queda abierto; el proyecto nunca lo reinicia para recuperarse.
+**Preview:** pasaron las pruebas aisladas de transferencia, interfaz y acceso de Windows. La biblioteca completa ya no se copia dentro de cada renderer. Falta validar manualmente el arranque en una instalación limpia. Si la personalización falla, Codex queda abierto; el proyecto nunca lo reinicia para recuperarse.
 
 [Guía del agente](docs/AGENT.md) · [Actualizaciones](docs/UPDATES.md) · [Pruebas](docs/TESTING.md) · [Licencia MIT del código](LICENSE)

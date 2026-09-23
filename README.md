@@ -29,6 +29,7 @@ The gallery is a showcase, not a bundled collection. [Wallpaper credits](docs/as
 - **Your media:** JPG, PNG, WebP, MP4 and WebM. Videos loop silently.
 - **Your colors:** automatic palettes or manual colors, with adjustable opacity and corners.
 - **Your layout:** fit without stretching, saved preferences and support for additional windows.
+- **Bounded renderer memory:** each window receives the catalog thumbnails and only its currently selected full-size wallpaper. Hidden windows defer animated media.
 
 ## Get started
 
@@ -50,6 +51,6 @@ Then choose it in **Profile → Fondos**. The library starts empty. **Wallpaper 
 
 **Independent, experimental project.** It applies CSS/JavaScript through local Electron debugging. It is not an official plugin or approved by OpenAI; compatibility and freedom from account restrictions are not guaranteed. [Security & scope](docs/SECURITY.en.md).
 
-**Preview:** isolated tests and Windows shortcut checks pass. A clean-install startup still needs manual validation. If personalization fails, Codex stays open; the project never restarts it to recover.
+**Preview:** isolated transfer, UI and Windows shortcut checks pass. The full media library is no longer copied into every renderer. A clean-install startup still needs manual validation. If personalization fails, Codex stays open; the project never restarts it to recover.
 
 [Agent guide (ES)](docs/AGENT.md) · [Updates (ES)](docs/UPDATES.md) · [Tests (ES)](docs/TESTING.md) · [MIT license for code](LICENSE)
