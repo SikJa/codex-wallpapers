@@ -1,5 +1,11 @@
 # Cambios
 
+## 0.1.5 — Preview
+
+- Refresh the usage badge from the current account-scoped native rate-limit query.
+- Ignore model-specific image-generation queries so the badge reflects Codex usage.
+- Keep the badge in English and refresh it as native usage data changes.
+
 ## 0.1.4 — Preview
 
 - Add Codex Windows 26.917.8451.0 after checking native shell, profile-menu and usage-query markers in the official package.

@@ -8,9 +8,10 @@ try{
  await page.setContent('<html lang="en"><head></head><body><main data-app-shell-main-surface></main><button aria-label="Open profile menu">Demo</button></body></html>');
  await page.evaluate(()=>{
   window.calls=0;window.subscribers=new Set();
-  window.nativeQuery={queryKey:['rate-limit-status'],state:{dataUpdatedAt:Date.now(),fetchStatus:'idle',data:{rate_limit:{primary_window:{used_percent:12},secondary_window:{used_percent:38}}}}};
-  const cache={find:()=>window.nativeQuery,subscribe:fn=>{window.subscribers.add(fn);return()=>window.subscribers.delete(fn)}};
-  const client={getQueryCache:()=>cache,async refetchQueries(){window.calls++;nativeQuery.state.dataUpdatedAt=Date.now();for(const f of subscribers)f({query:nativeQuery})}};
+  window.nativeQuery={queryKey:['rate-limit-status','opaque-user-scope','opaque-account-scope'],state:{dataUpdatedAt:Date.now(),fetchStatus:'idle',data:{rate_limit:{primary_window:{used_percent:12},secondary_window:{used_percent:38}}}}};
+  window.imageQuery={queryKey:['rate-limit-status','image-generation','opaque-model-scope',null],state:{dataUpdatedAt:Date.now(),fetchStatus:'idle',data:{}}};
+  const cache={findAll:()=>[window.nativeQuery,window.imageQuery],subscribe:fn=>{window.subscribers.add(fn);return()=>window.subscribers.delete(fn)}};
+  const client={getQueryCache:()=>cache,async refetchQueries(filter){window.calls++;window.lastRefetchFilter=filter;nativeQuery.state.dataUpdatedAt=Date.now();for(const f of subscribers)f({query:nativeQuery})}};
   document.querySelector('main').__reactFiber$test={memoizedProps:{value:client},return:null};
  });
  await page.evaluate((await fs.readFile('src/usage.js','utf8'))+'()');
@@ -18,6 +19,8 @@ try{
  assert.equal(await page.evaluate(()=>window.calls),0);
  await page.clock.fastForward(31000);
  assert.equal(await page.evaluate(()=>window.calls),1);
+ assert.equal(await page.evaluate(()=>window.lastRefetchFilter.predicate(nativeQuery)),true);
+ assert.equal(await page.evaluate(()=>window.lastRefetchFilter.predicate(imageQuery)),false);
  // Native updates reach the badge without opening a menu.
  await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=65;for(const f of subscribers)f({query:nativeQuery})});
  assert.equal(await page.locator('[data-cw-usage]').textContent(),'35% left');assert.equal(await page.locator('[role=menu]').count(),0);
