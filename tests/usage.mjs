@@ -37,6 +37,8 @@ try{
  assert.equal(await page.locator('[data-cw-usage]').getAttribute('data-level'),'mid');
  await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=80;nativeQuery.state.data.rate_limit.secondary_window.used_percent=40;for(const f of subscribers)f({query:nativeQuery})});
  assert.equal(await page.locator('[data-cw-usage]').getAttribute('data-level'),'low');
+ await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=40;nativeQuery.state.data.rate_limit.secondary_window.used_percent=20;for(const f of subscribers)f({query:nativeQuery})});
+ assert.equal(await page.locator('[data-cw-usage]').getAttribute('data-level'),'high');
  await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=20;nativeQuery.state.data.rate_limit.secondary_window.used_percent=39;for(const f of subscribers)f({query:nativeQuery})});
  assert.equal(await page.locator('[data-cw-usage]').getAttribute('data-level'),'high');
  await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=65;nativeQuery.state.data.rate_limit.secondary_window.used_percent=38;for(const f of subscribers)f({query:nativeQuery})});

@@ -68,8 +68,8 @@
     if (badge.querySelector('span').textContent !== text) badge.querySelector('span').textContent = text;
     badge.style.opacity = fresh ? '1' : '.5';
     badge.dataset.fresh = String(fresh);
-    badge.dataset.level = percent <= 20 ? 'low' : percent <= 60 ? 'mid' : 'high';
-    badge.style.setProperty('--cw-gauge-color', fresh ? `color-mix(in srgb,${percent <= 20 ? '#e65c63' : percent <= 60 ? '#e5a548' : '#4ec58b'} 82%,var(--cw-accent,#cbd5e1))` : 'var(--cw-accent,#cbd5e1)');
+    badge.dataset.level = percent <= 20 ? 'low' : percent < 60 ? 'mid' : 'high';
+    badge.style.setProperty('--cw-gauge-color', fresh ? `color-mix(in srgb,${percent <= 20 ? '#e65c63' : percent < 60 ? '#e5a548' : '#4ec58b'} 82%,var(--cw-accent,#cbd5e1))` : 'var(--cw-accent,#cbd5e1)');
     badge.querySelector('.cw-track').style.strokeDasharray = `${sweep} ${circumference}`;
     badge.querySelector('.cw-progress').style.strokeDasharray = `${sweep * (fresh ? percent : 0) / 100} ${circumference}`;
     badge.querySelector('.cw-glint').style.strokeDasharray = `5 ${circumference}`;
