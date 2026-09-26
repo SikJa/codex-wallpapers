@@ -5,8 +5,9 @@
     "26.908.9136.0",
     "26.911.7940.0",
     "26.917.8451.0",
-    "26.924.1866.0"
+    "26.924.1866.0",
+    "26.924.2738.0"
   ],
   "status": "preview",
-  "note": "Preview. Codex 26.924.1866.0 passed a full-process cold start from the customized shortcut, with wallpaper media, profile picker, sidebar/header surfaces and usage gauge verified in the official app. Isolated UI tests pass. Clean-install validation remains. See docs/TESTING.md."
+  "note": "Preview. Codex 26.924.2738.0 passed a full-process start from the customized shortcut, with wallpaper video, profile picker and usage indicator verified in the official app. Isolated tests pass. Clean-install validation remains. See docs/TESTING.md."
 }
