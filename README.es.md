@@ -30,7 +30,7 @@ La galería muestra ejemplos; los fondos no vienen incluidos. [Créditos de los 
 - **Tus colores:** paleta automática o manual, opacidad y esquinas ajustables.
 - **Tu espacio:** encuadre sin estirar, preferencias guardadas y soporte para varias ventanas.
 - **Memoria controlada:** cada ventana recibe las miniaturas del catálogo y solamente el fondo completo que está usando. Las ventanas ocultas esperan antes de cargar animaciones.
-- **Vista de uso:** el indicador lateral abre un panel con límite y reinicio nativos, más historial de tokens calculado de las sesiones de esta PC. El botón `+` permite elegir una foto propia. [Qué datos son reales y cuáles no](docs/USAGE.md).
+- **Vista de uso:** al hacer clic en el indicador lateral se abre el panel; solo el enlace dentro lleva a Uso. Muestra límite y reinicio nativos, más historial de tokens calculado de las sesiones de esta PC. El botón `+` permite elegir una foto propia. [Qué datos son reales y cuáles no](docs/USAGE.md).
 
 ## Empezar
 

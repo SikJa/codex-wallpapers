@@ -22,6 +22,9 @@ try{
   await page.evaluate(await fs.readFile('src/usage-panel.bundle.js','utf8'));
   await page.waitForSelector('.cwp-trigger');
   assert.equal(await page.locator('.cwp-trigger').getAttribute('aria-label'),'Usage: 58% remaining');
+  await page.locator('.cwp-trigger').click();
+  await page.waitForSelector('.cwp-panel');
+  assert.equal(await page.evaluate(()=>window.usageClicked===true),false);
   const current=new Date(),today=`${current.getFullYear()}-${String(current.getMonth()+1).padStart(2,'0')}-${String(current.getDate()).padStart(2,'0')}`;
   await page.evaluate(day=>window.__CW_USAGE_PANEL__.setSnapshot({source:'local-session-logs',generatedAt:new Date().toISOString(),coverage:{sessions:2,firstDay:day,lastDay:day,skippedFiles:0},totalTokens:12345,maxSessionTokens:10000,longestTaskSeconds:3600,currentStreakDays:1,longestStreakDays:3,dailyTokens:{[day]:12345}}),today);
   await page.locator('.cwp-trigger').hover();
