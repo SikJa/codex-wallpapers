@@ -4,12 +4,16 @@ import crypto from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
+import { Worker } from 'node:worker_threads';
 import { dataRoot, readLibrary, safePath, atomicJSON } from './library.mjs';
 import { Session, targets } from './cdp.mjs';
 const exec=promisify(execFile),root=dataRoot();
 const ownFile=fileURLToPath(import.meta.url),repo=path.dirname(path.dirname(ownFile));
 const read=p=>fs.readFile(path.join(repo,p),'utf8');
-export async function payload(){return `${await read('src/runtime.js')}(${JSON.stringify({appearanceCSS:await read('src/appearance.css'),modalCSS:await read('src/modal.css')})});\n${await read('src/usage.js')}();`;}
+export async function payload(){
+  const [appearanceCSS,modalCSS,panelCSS,panelJS]=await Promise.all(['src/appearance.css','src/modal.css','src/usage-panel.bundle.css','src/usage-panel.bundle.js'].map(read));
+  return `${await read('src/runtime.js')}(${JSON.stringify({appearanceCSS,modalCSS})});\n${await read('src/usage.js')}();\ntry{(()=>{const style=document.createElement('style');style.id='cw-usage-panel-style';style.textContent=${JSON.stringify(panelCSS)};document.head.append(style);})();\n${panelJS}\n}catch(error){document.getElementById('cw-usage-panel-style')?.remove();console.warn('Codex Wallpapers usage preview unavailable:',error);}`;
+}
 export async function applyWindow(session, library, base, code){
   const owner=crypto.randomUUID();
   const acquired=await session.evaluate(`(()=>{if(window.__CW_TRANSFER_LOCK__?.until>Date.now())return false;window.__CW_TRANSFER_LOCK__={owner:${JSON.stringify(owner)},until:Date.now()+120000};return true})()`);
@@ -78,9 +82,20 @@ async function run(){
   let lock;
   if(watch){try{lock=await fs.open(path.join(root,`watch-${endpoint.browserId}.lock`),'wx');}catch(e){if(e.code==='EEXIST'){console.log('Window listener already started for this browser.');return;}throw e;}}
   const seen=new Map(),code=await payload();let failures=0,first=true;
+  let usageSnapshot=null,scanStartedAt=0,scan=false,workerAlive=true;
+  const worker=new Worker(new URL('./usage-worker.mjs',import.meta.url));worker.unref();
+  worker.on('message',message=>{scan=false;if(message.snapshot)usageSnapshot=message.snapshot;else if(message.error)console.warn('Local usage scan unavailable:',message.error)});
+  worker.on('error',error=>{workerAlive=false;scan=false;console.warn('Local usage worker unavailable:',error.message)});
+  worker.on('exit',()=>{workerAlive=false;scan=false});
+  const refreshUsage=()=>{
+    if(!workerAlive||scan||Date.now()-scanStartedAt<5*60*1000)return;
+    scanStartedAt=Date.now();
+    scan=true;worker.postMessage('refresh');
+  };
   const writeStatus=async value=>atomicJSON(path.join(root,'status.json'),{time:new Date().toISOString(),...value});
   try {
     do{
+      refreshUsage();
       let list;
       try{list=await targets(endpoint);failures=0;}catch(e){if(!watch||++failures>=3)throw e;await new Promise(r=>setTimeout(r,2000));continue;}
       const library=await readLibrary();
@@ -101,6 +116,11 @@ async function run(){
             await transferRequested(s,library,root);
             status=await s.evaluate('window.__CODEX_WALLPAPERS_PUBLIC__.status()');
           }
+          const state=seen.get(t.id);
+          if(usageSnapshot&&state?.usageGeneratedAt!==usageSnapshot.generatedAt){
+            await s.evaluate(`window.__CW_USAGE_PANEL__?.setSnapshot(${JSON.stringify(usageSnapshot)})`);
+            state.usageGeneratedAt=usageSnapshot.generatedAt;
+          }
           await writeStatus({state:'ready',target:t.id,...status});first=false;
         }catch(e){await writeStatus({state:'window-failed',target:t.id,error:e.message});if(!watch)throw e;}
         finally{s.close();}
@@ -108,6 +128,6 @@ async function run(){
       if(!watch&&first)throw Error('No ready Codex window. Open the personalized shortcut first.');
       if(watch)await new Promise(r=>setTimeout(r,2000));
     }while(watch);
-  } finally {if(lock){await lock.close();await fs.rm(path.join(root,`watch-${endpoint.browserId}.lock`),{force:true});}}
+  } finally {await worker.terminate();if(lock){await lock.close();await fs.rm(path.join(root,`watch-${endpoint.browserId}.lock`),{force:true});}}
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===ownFile)run().catch(e=>{console.error(e.message);process.exitCode=1;});

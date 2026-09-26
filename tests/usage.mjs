@@ -8,7 +8,7 @@ try{
  await page.setContent('<html lang="en"><head></head><body><main data-app-shell-main-surface></main><nav><div class="rail-footer"><div class="help">?</div><div class="profile-row"><div class="sidebar-item"><button aria-label="Open profile menu">Demo</button></div></div></div></nav></body></html>');
  await page.evaluate(()=>{
   window.calls=0;window.subscribers=new Set();
-  window.nativeQuery={queryKey:['rate-limit-status','opaque-user-scope','opaque-account-scope'],state:{dataUpdatedAt:Date.now(),fetchStatus:'idle',data:{rate_limit:{primary_window:{used_percent:12},secondary_window:{used_percent:38}}}}};
+  window.nativeQuery={queryKey:['rate-limit-status','opaque-user-scope','opaque-account-scope'],state:{dataUpdatedAt:Date.now(),fetchStatus:'idle',data:{plan_type:'pro',rate_limit:{primary_window:{used_percent:12},secondary_window:{used_percent:38,reset_at:1791053259}}}}};
   window.imageQuery={queryKey:['rate-limit-status','image-generation','opaque-model-scope',null],state:{dataUpdatedAt:Date.now(),fetchStatus:'idle',data:{}}};
   const cache={findAll:()=>[window.nativeQuery,window.imageQuery],subscribe:fn=>{window.subscribers.add(fn);return()=>window.subscribers.delete(fn)}};
   const client={getQueryCache:()=>cache,async refetchQueries(filter){window.calls++;window.lastRefetchFilter=filter;nativeQuery.state.dataUpdatedAt=Date.now();for(const f of subscribers)f({query:nativeQuery})}};
@@ -16,6 +16,7 @@ try{
  });
  await page.evaluate((await fs.readFile('src/usage.js','utf8'))+'()');
  assert.equal(await page.locator('[data-cw-usage]').textContent(),'62%');
+ assert.deepEqual(await page.evaluate(()=>window.__CW_USAGE__.getSnapshot()),await page.evaluate(()=>({percent:62,resetAt:1791053259000,updatedAt:window.nativeQuery.state.dataUpdatedAt,plan:'pro'})));
  assert.equal(await page.locator('button [data-cw-usage]').count(),0);
  assert.equal(await page.locator('[data-cw-usage] svg circle').count(),3);
  assert.equal(await page.locator('.rail-footer > :first-child').getAttribute('data-cw-usage'),'');

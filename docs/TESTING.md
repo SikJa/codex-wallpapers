@@ -5,6 +5,8 @@
 ```powershell
 node --test tests/*.test.mjs
 node scripts/check.mjs
+npm run typecheck
+npm run build:usage
 ```
 
 La suite de interfaz requiere `ffmpeg`, `ffprobe` y Playwright, instalado fuera del código distribuido o como dependencia local sin guardar. Podés usar:
@@ -14,6 +16,7 @@ npm install --no-save --package-lock=false playwright
 npx playwright install chromium
 node tests/ui.mjs
 node tests/usage.mjs
+node tests/usage-panel.mjs
 ```
 
 Con una instalación existente, definir `PLAYWRIGHT_MODULE` como ruta absoluta al módulo `playwright/index.mjs` y opcionalmente `CW_TEST_BROWSER` como ruta de Chrome/Chromium. La prueba usa un navegador aislado y un servidor efímero en loopback. No se conecta a Codex.
@@ -45,3 +48,5 @@ En Codex oficial 26.924.2738.0 se confirmó que la versión no admitida abría C
 `node scripts/showcase.mjs <manifest-local.json>` renderiza el runtime real sobre una interfaz de demostración. El manifest es un array de `{file,title,slug,source}` y debe quedar fuera de Git. Las fotos resultantes van a `docs/assets`; los originales y la biblioteca temporal quedan fuera del código instalado. Revisar cada captura antes de publicarla y registrar sus fuentes. Los enlaces de idioma de los README cambian la documentación; la interfaz distribuida del selector permanece en inglés.
 
 `tests/usage.mjs` usa una consulta nativa simulada y reloj controlado para verificar suscripciones, refresco cada 30 segundos, pausa en segundo plano, expiracion de datos, idioma y limpieza. No accede a ninguna cuenta.
+
+`tests/usage-local.test.mjs` usa sesiones sintéticas para comprobar deltas de tokens, rachas, duración, actualización de archivos y descarte de archivos eliminados. `tests/usage-panel.mjs` monta el panel en Chrome aislado para comprobar nombre/plan nativos, foto elegida con `+`, métricas locales, celdas interactivas, enlace a Uso y limpieza. Ninguna de estas pruebas lee la cuenta ni las sesiones reales del usuario. [Alcance de los datos](USAGE.md).

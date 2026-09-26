@@ -1,0 +1,49 @@
+import fs from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {createServer} from 'node:http';
+import {pathToFileURL} from 'node:url';
+const {chromium}=process.env.PLAYWRIGHT_MODULE?await import(pathToFileURL(process.env.PLAYWRIGHT_MODULE)):await import('playwright');
+
+const browser=await chromium.launch({headless:true,...(process.env.CW_TEST_BROWSER?{executablePath:process.env.CW_TEST_BROWSER}:{})});
+const server=createServer((_req,res)=>{res.setHeader('content-type','text/html');res.end('<!doctype html><title>Isolated usage fixture</title>')});
+await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+try{
+  const page=await browser.newPage({viewport:{width:1200,height:800}});
+  await page.goto(`http://127.0.0.1:${server.address().port}/`);
+  await page.setContent(`<main data-app-shell-main-surface></main><nav><div class="rail-footer"><div class="sidebar-item"><button id="profile" aria-label="Open profile menu"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg=="></button></div></div></nav><div role="menu" aria-labelledby="profile"><div role="menuitem">Test User<br>Pro</div><div role="menuitem" id="native-usage">Usage</div></div>`);
+  await page.evaluate(()=>{
+    window.nativeQuery={queryKey:['rate-limit-status','user','account'],state:{dataUpdatedAt:Date.now(),fetchStatus:'idle',data:{plan_type:'pro',rate_limit:{primary_window:{used_percent:30,reset_at:1791053259},secondary_window:{used_percent:42,reset_at:1791053259}}}}};
+    const cache={findAll:()=>[window.nativeQuery],subscribe:()=>()=>{}};
+    document.querySelector('main').__reactFiber$test={memoizedProps:{value:{getQueryCache:()=>cache,refetchQueries:async()=>{}}},return:null};
+    document.querySelector('#native-usage').addEventListener('click',()=>{window.usageClicked=true});
+  });
+  await page.evaluate((await fs.readFile('src/usage.js','utf8'))+'()');
+  await page.addStyleTag({content:await fs.readFile('src/usage-panel.bundle.css','utf8')});
+  await page.evaluate(await fs.readFile('src/usage-panel.bundle.js','utf8'));
+  await page.waitForSelector('.cwp-trigger');
+  assert.equal(await page.locator('.cwp-trigger').getAttribute('aria-label'),'Usage: 58% remaining');
+  const current=new Date(),today=`${current.getFullYear()}-${String(current.getMonth()+1).padStart(2,'0')}-${String(current.getDate()).padStart(2,'0')}`;
+  await page.evaluate(day=>window.__CW_USAGE_PANEL__.setSnapshot({source:'local-session-logs',generatedAt:new Date().toISOString(),coverage:{sessions:2,firstDay:day,lastDay:day,skippedFiles:0},totalTokens:12345,maxSessionTokens:10000,longestTaskSeconds:3600,currentStreakDays:1,longestStreakDays:3,dailyTokens:{[day]:12345}}),today);
+  await page.locator('.cwp-trigger').hover();
+  await page.waitForSelector('.cwp-panel');
+  assert.equal(await page.locator('.cwp-profile h2').textContent(),'Test User');
+  assert.equal(await page.locator('.cwp-plan').textContent(),'Pro');
+  assert.match(await page.locator('.cwp-stats').textContent(),/12\.3K/);
+  assert.match(await page.locator('.cwp-limit').textContent(),/58% remaining/);
+  assert.equal(await page.locator('.cwp-map button').count(),364);
+  const panelSize=await page.locator('.cwp-panel').evaluate(e=>({scroll:e.scrollHeight,client:e.clientHeight}));
+  assert.ok(panelSize.scroll<=panelSize.client+1,`Usage preview unexpectedly scrolls at 1200×800: ${JSON.stringify(panelSize)}`);
+  await fs.mkdir('test-results',{recursive:true});await page.screenshot({path:'test-results/usage-panel.png'});
+  await page.locator('.cwp-map button').last().hover();
+  assert.match(await page.locator('.cwp-day-value').textContent(),/tokens/);
+  const avatarBase64=await page.evaluate(()=>{const canvas=document.createElement('canvas');canvas.width=canvas.height=4;canvas.getContext('2d').fillRect(0,0,4,4);return canvas.toDataURL('image/png').split(',')[1]});
+  const chooserPromise=page.waitForEvent('filechooser');await page.locator('.cwp-add-photo').click();
+  const chooser=await chooserPromise;await chooser.setFiles({name:'avatar.png',mimeType:'image/png',buffer:Buffer.from(avatarBase64,'base64')});
+  await page.waitForFunction(()=>localStorage.getItem('codex-wallpapers.usage-photo.v1')?.startsWith('data:image/jpeg;base64,'));
+  assert.equal((await page.evaluate(()=>localStorage.getItem('codex-wallpapers.usage-photo.v1'))).includes('Test User'),false);
+  await page.locator('.cwp-open-usage').click();
+  await page.waitForFunction(()=>window.usageClicked===true);
+  await page.evaluate(()=>window.__CW_USAGE_PANEL__.dispose());
+  assert.equal(await page.locator('.cwp-trigger').count(),0);
+  console.log('PASS: per-user native identity, local snapshot, avatar picker, activity cells, native Usage link and cleanup.');
+}finally{await browser.close();await new Promise(resolve=>server.close(resolve))}

@@ -8,6 +8,24 @@
   const findUsageQuery = () => client?.getQueryCache().findAll({queryKey, exact: false})
     .filter(q => q.queryKey.length === 3 && q.state.data?.rate_limit)
     .sort((a, b) => (b.state.dataUpdatedAt || 0) - (a.state.dataUpdatedAt || 0))[0] || null;
+  const resetTime = value => {
+    if(typeof value === 'string' && !/^\d+$/.test(value)) {const parsed=Date.parse(value);return Number.isFinite(parsed)?parsed:null;}
+    const n=Number(value);
+    return Number.isFinite(n)&&n>1e12?n:Number.isFinite(n)&&n>1e9?n*1000:null;
+  };
+  function nativeSnapshot(){
+    let query;
+    try{query=findUsageQuery();}catch{return {percent:null,resetAt:null,updatedAt:null,plan:null};}
+    const rate=query?.state.data?.rate_limit;
+    const windows=[rate?.primary_window,rate?.secondary_window].filter(w=>typeof w?.used_percent==='number'&&Number.isFinite(w.used_percent));
+    const updatedAt=query?.state.dataUpdatedAt||null;
+    if(!windows.length||!updatedAt||Date.now()-updatedAt>=120000)return {percent:null,resetAt:null,updatedAt,plan:null};
+    const limiting=windows.reduce((a,b)=>a.used_percent>=b.used_percent?a:b);
+    const rawPlan=query.state.data?.plan_type||rate?.plan_type;
+    const normalizedPlan=typeof rawPlan==='string'?rawPlan.replace(/[_-]/g,' ').trim():null;
+    const plan=normalizedPlan&&/^(free|plus|pro|pro max|team|business|enterprise|edu)$/i.test(normalizedPlan)?normalizedPlan:null;
+    return {percent:Math.max(0,Math.min(100,Math.round(100-limiting.used_percent))),resetAt:resetTime(limiting.reset_at??limiting.resets_at??limiting.resetAt),updatedAt,plan};
+  }
   const style = document.createElement('style');
   style.id = 'cw-usage-style';
   style.textContent = `[data-cw-usage]{width:34px;height:34px;flex:none;position:relative;display:grid;place-items:center;font:700 9px/1 system-ui,sans-serif;font-variant-numeric:tabular-nums;pointer-events:none}
@@ -102,6 +120,7 @@
   const api = {
     version: 7,
     refresh,
+    getSnapshot:nativeSnapshot,
     dispose() {
       disposed = true; clearInterval(timer); observer.disconnect(); unsubscribe?.();
       document.removeEventListener('visibilitychange', refresh); window.removeEventListener('focus', refresh);
