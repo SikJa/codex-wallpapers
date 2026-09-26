@@ -13,7 +13,7 @@ try {
  if(-not $locked){return}
  $app=Get-CWPackage
  $record.version=$app.Version
- if((Get-CWProcesses $app).Count){$record.state='already-open';return}
+ if((Get-CWProcesses $app).Count){Start-CWPackage $app;$record.state='already-open-activated';return}
  $node=Get-Command node.exe -ErrorAction SilentlyContinue
  $versions=(Get-Content (Join-Path $Repository 'compatibility.json') -Raw|ConvertFrom-Json).windowsPackages
  $port=Get-CWAvailablePort
