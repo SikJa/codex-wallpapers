@@ -3,7 +3,7 @@
   if (window.__CW_USAGE__?.version === 2) return window.__CW_USAGE__;
   window.__CW_USAGE__?.dispose?.();
   document.getElementById('cw-usage-style')?.remove();
-  const selector = 'button[aria-label="Abrir menú de perfil"],button[aria-label="Open profile menu"],button[aria-label="Abrir menu de perfil"]';
+  const selector = 'button[aria-label="Abrir menú de perfil"],button[aria-label="Open profile menu"],button[aria-label="Abrir menu de perfil"],button[aria-label="Open settings"],button[aria-label="Abrir configuración"]';
   const queryKey = ['rate-limit-status'];
   const findUsageQuery = () => client?.getQueryCache().findAll({queryKey, exact: false})
     .filter(q => q.queryKey.length === 3 && q.state.data?.rate_limit)

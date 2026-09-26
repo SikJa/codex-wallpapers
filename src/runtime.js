@@ -91,7 +91,7 @@
   q('reset').onclick=()=>{prefs={...defaults,selected:prefs.selected};save();appearance();notice('Settings reset.');};
   for(const k of Object.keys(defaults)){const el=q(k);if(!el)continue;el.addEventListener('input',()=>{prefs=sanitize({...prefs,[k]:el.type==='range'?Number(el.value):el.value});save();appearance();});}
   q('search').oninput=updateFilter;for(const b of q('filters').children)b.onclick=()=>{filter=b.dataset.kind;for(const x of q('filters').children)x.setAttribute('aria-pressed',String(x===b));updateFilter();};
-  const menuSelector='button[aria-label="Abrir menú de perfil"],button[aria-label="Open profile menu"]';
+  const menuSelector='button[aria-label="Abrir menú de perfil"],button[aria-label="Open profile menu"],button[aria-label="Abrir menu de perfil"]';
   const menuHandlers=new Map();
   function insertMenu(){
     const trigger=document.querySelector(menuSelector);if(!trigger)return;

@@ -24,6 +24,10 @@ try{
  // Native updates reach the badge without opening a menu.
  await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=65;for(const f of subscribers)f({query:nativeQuery})});
  assert.equal(await page.locator('[data-cw-usage]').textContent(),'35% left');assert.equal(await page.locator('[role=menu]').count(),0);
+ await page.locator('button').evaluate(e=>e.setAttribute('aria-label','Open settings'));
+ assert.equal(await page.locator('[data-cw-usage]').textContent(),'35% left');
+ await page.locator('button').evaluate(e=>e.setAttribute('aria-label','Abrir configuración'));
+ assert.equal(await page.locator('[data-cw-usage]').textContent(),'35% left');
  await page.evaluate(()=>Object.defineProperty(document,'hidden',{configurable:true,get:()=>true}));
  await page.clock.fastForward(150000);assert.equal(await page.evaluate(()=>window.calls),1);assert.equal(await page.locator('[data-cw-usage]').textContent(),'—');
  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>false});document.documentElement.lang='pt-BR';window.dispatchEvent(new Event('focus'))});

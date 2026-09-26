@@ -30,6 +30,8 @@ try{
  await page.evaluate(id=>window.__CODEX_WALLPAPERS_PUBLIC__.select(id),image.id);
  await applyWindow({evaluate:x=>page.evaluate(x)},library,data,code);
  assert.equal(await page.locator('#cw-media').count(),1);assert.equal(await page.locator('#cw-media').evaluate(e=>e.naturalWidth),1280);
+ assert.equal(await page.locator('aside.app-shell-left-panel > div > div.max-w-full').evaluate(e=>getComputedStyle(e).borderTopLeftRadius),'14px');
+ assert.notEqual(await page.locator('aside.app-shell-left-panel > div > div.max-w-full').evaluate(e=>getComputedStyle(e).backgroundColor),'rgba(0, 0, 0, 0)');
  assert.equal(await page.locator('[data-settings]').evaluate(e=>getComputedStyle(e).borderTopLeftRadius),'18px');assert.equal(await page.locator('[data-settings]').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(0, 0, 0)');
  assert.equal(await page.locator('textarea').count(),1);await page.locator('textarea').fill('El compositor sigue funcionando.');results.push('Image; palette; rounded settings; composer input preserved');
  await page.locator('#profile').click();await page.locator('[data-cw-menu]').click();await page.locator('[data-kind=video]').click();assert.equal(await page.locator('#grid button:visible').count(),1);await page.locator('#search').fill('missing');assert.equal(await page.locator('#grid button:visible').count(),0);await page.locator('#search').fill('');await page.locator('[data-kind=all]').click();await page.screenshot({path:path.join(out,'populated-library.png')});await page.keyboard.press('Escape');
