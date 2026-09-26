@@ -36,6 +36,8 @@ Se generan PNG/video sintéticos en `test-results`, se importan con el código r
 
 La suite automatizada no demuestra por sí sola compatibilidad con una versión nueva de Codex. El primer lanzamiento distribuible sigue en preview hasta completar este recorrido en una instalación limpia. No reiniciar una sesión del usuario para completar esta lista sin pedir permiso.
 
+En Codex oficial 26.924.1866.0 se verificaron en una sesión activa: carga de video e imagen con transferencia bajo demanda, reproducción de video, biblioteca de 17 medios locales, apertura del selector desde el menú de perfil, superficie de sidebar y encabezado, e indicador de uso sobre la ayuda con el acento del fondo. Esta prueba no cubre una instalación limpia ni un arranque en frío desde el acceso distribuible.
+
 ## Capturas de documentacion
 
 `node scripts/showcase.mjs <manifest-local.json>` renderiza el runtime real sobre una interfaz de demostración. El manifest es un array de `{file,title,slug,source}` y debe quedar fuera de Git. Las fotos resultantes van a `docs/assets`; los originales y la biblioteca temporal quedan fuera del código instalado. Revisar cada captura antes de publicarla y registrar sus fuentes. Los enlaces de idioma de los README cambian la documentación; la interfaz distribuida del selector permanece en inglés.

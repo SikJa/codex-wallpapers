@@ -5,7 +5,7 @@ const pw=process.env.PLAYWRIGHT_MODULE?await import(pathToFileURL(process.env.PL
 const browser=await pw.chromium.launch({headless:true,...(process.env.CW_TEST_BROWSER?{executablePath:process.env.CW_TEST_BROWSER}:{})});
 try{
  const page=await browser.newPage();await page.clock.install({time:new Date('2026-01-01T00:00:00Z')});
- await page.setContent('<html lang="en"><head></head><body><main data-app-shell-main-surface></main><button aria-label="Open profile menu">Demo</button></body></html>');
+ await page.setContent('<html lang="en"><head></head><body><main data-app-shell-main-surface></main><nav><div class="rail-footer"><div class="help">?</div><div class="profile-row"><div class="sidebar-item"><button aria-label="Open profile menu">Demo</button></div></div></div></nav></body></html>');
  await page.evaluate(()=>{
   window.calls=0;window.subscribers=new Set();
   window.nativeQuery={queryKey:['rate-limit-status','opaque-user-scope','opaque-account-scope'],state:{dataUpdatedAt:Date.now(),fetchStatus:'idle',data:{rate_limit:{primary_window:{used_percent:12},secondary_window:{used_percent:38}}}}};
@@ -15,7 +15,17 @@ try{
   document.querySelector('main').__reactFiber$test={memoizedProps:{value:client},return:null};
  });
  await page.evaluate((await fs.readFile('src/usage.js','utf8'))+'()');
- assert.equal(await page.locator('[data-cw-usage]').textContent(),'62% left');
+ assert.equal(await page.locator('[data-cw-usage]').textContent(),'62%');
+ assert.equal(await page.locator('button [data-cw-usage]').count(),0);
+ assert.equal(await page.locator('[data-cw-usage] svg circle').count(),3);
+ assert.equal(await page.locator('.rail-footer > :first-child').getAttribute('data-cw-usage'),'');
+ assert.equal(await page.locator('[data-cw-usage]').evaluate(e=>getComputedStyle(e).width),'34px');
+ await page.evaluate(()=>document.documentElement.style.setProperty('--cw-accent','#b28be6'));
+ assert.equal(await page.locator('[data-cw-usage] .cw-progress').evaluate(e=>getComputedStyle(e).stroke),'url("#cw-usage-metal")');
+ const firstAccent=await page.locator('[data-cw-usage] .cw-metal-main').first().evaluate(e=>getComputedStyle(e).stopColor);
+ await page.evaluate(()=>document.documentElement.style.setProperty('--cw-accent','#dca76b'));
+ assert.notEqual(await page.locator('[data-cw-usage] .cw-metal-main').first().evaluate(e=>getComputedStyle(e).stopColor),firstAccent);
+ assert.equal(await page.locator('[data-cw-usage]').getAttribute('data-level'),'high');
  assert.equal(await page.evaluate(()=>window.calls),0);
  await page.clock.fastForward(31000);
  assert.equal(await page.evaluate(()=>window.calls),1);
@@ -23,15 +33,21 @@ try{
  assert.equal(await page.evaluate(()=>window.lastRefetchFilter.predicate(imageQuery)),false);
  // Native updates reach the badge without opening a menu.
  await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=65;for(const f of subscribers)f({query:nativeQuery})});
- assert.equal(await page.locator('[data-cw-usage]').textContent(),'35% left');assert.equal(await page.locator('[role=menu]').count(),0);
+ assert.equal(await page.locator('[data-cw-usage]').textContent(),'35%');assert.equal(await page.locator('[role=menu]').count(),0);
+ assert.equal(await page.locator('[data-cw-usage]').getAttribute('data-level'),'mid');
+ await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=80;nativeQuery.state.data.rate_limit.secondary_window.used_percent=40;for(const f of subscribers)f({query:nativeQuery})});
+ assert.equal(await page.locator('[data-cw-usage]').getAttribute('data-level'),'low');
+ await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=20;nativeQuery.state.data.rate_limit.secondary_window.used_percent=39;for(const f of subscribers)f({query:nativeQuery})});
+ assert.equal(await page.locator('[data-cw-usage]').getAttribute('data-level'),'high');
+ await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=65;nativeQuery.state.data.rate_limit.secondary_window.used_percent=38;for(const f of subscribers)f({query:nativeQuery})});
  await page.locator('button').evaluate(e=>e.setAttribute('aria-label','Open settings'));
- assert.equal(await page.locator('[data-cw-usage]').textContent(),'35% left');
+ assert.equal(await page.locator('[data-cw-usage]').textContent(),'35%');
  await page.locator('button').evaluate(e=>e.setAttribute('aria-label','Abrir configuración'));
- assert.equal(await page.locator('[data-cw-usage]').textContent(),'35% left');
+ assert.equal(await page.locator('[data-cw-usage]').textContent(),'35%');
  await page.evaluate(()=>Object.defineProperty(document,'hidden',{configurable:true,get:()=>true}));
  await page.clock.fastForward(150000);assert.equal(await page.evaluate(()=>window.calls),1);assert.equal(await page.locator('[data-cw-usage]').textContent(),'—');
  await page.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>false});document.documentElement.lang='pt-BR';window.dispatchEvent(new Event('focus'))});
- await page.waitForFunction(()=>document.querySelector('[data-cw-usage]').textContent==='35% left');assert.equal(await page.evaluate(()=>window.calls),2);
+ await page.waitForFunction(()=>document.querySelector('[data-cw-usage]').textContent==='35%');assert.equal(await page.evaluate(()=>window.calls),2);
  await page.evaluate(()=>window.__CW_USAGE__.dispose());await page.clock.fastForward(90000);assert.equal(await page.locator('[data-cw-usage]').count(),0);assert.equal(await page.evaluate(()=>window.calls),2);assert.equal(await page.evaluate(()=>window.subscribers.size),0);
  console.log('PASS: native usage events, automatic 30s refresh, hidden pause, stale data, English labels across host locales and cleanup.');
 }finally{await browser.close()}

@@ -1,6 +1,6 @@
 // Reads only the existing native usage query; no separate authentication or storage.
 (() => {
-  if (window.__CW_USAGE__?.version === 2) return window.__CW_USAGE__;
+  if (window.__CW_USAGE__?.version === 6) return window.__CW_USAGE__;
   window.__CW_USAGE__?.dispose?.();
   document.getElementById('cw-usage-style')?.remove();
   const selector = 'button[aria-label="Abrir menú de perfil"],button[aria-label="Open profile menu"],button[aria-label="Abrir menu de perfil"],button[aria-label="Open settings"],button[aria-label="Abrir configuración"]';
@@ -10,13 +10,24 @@
     .sort((a, b) => (b.state.dataUpdatedAt || 0) - (a.state.dataUpdatedAt || 0))[0] || null;
   const style = document.createElement('style');
   style.id = 'cw-usage-style';
-  style.textContent = `[data-cw-usage]{flex:none;margin-inline-start:auto;padding-inline-start:8px;font-size:11px;font-weight:400;white-space:nowrap;font-variant-numeric:tabular-nums;opacity:.8;color:inherit;background:none;border:0;box-shadow:none}
-  @supports(background-clip:text){[data-cw-usage]{background:linear-gradient(110deg,currentColor 0%,currentColor 42%,#fff 50%,currentColor 58%,currentColor 100%);background-size:300% 100%;background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:cw-usage-shimmer 9s ease-in-out infinite}}
-  @keyframes cw-usage-shimmer{0%,65%{background-position:100% 0}90%,100%{background-position:0% 0}}
-  @media(prefers-reduced-motion:reduce){[data-cw-usage]{animation:none;background:none;-webkit-text-fill-color:currentColor}}`;
+  style.textContent = `[data-cw-usage]{width:34px;height:34px;flex:none;position:relative;display:grid;place-items:center;--cw-gauge-color:var(--cw-accent,#cbd5e1);font:700 9px/1 system-ui,sans-serif;font-variant-numeric:tabular-nums;pointer-events:none}
+  [data-cw-usage] svg{position:absolute;inset:0;width:34px;height:34px;overflow:visible}
+  [data-cw-usage] circle{fill:none;stroke-width:3;stroke-linecap:round}
+  [data-cw-usage] circle.cw-track{stroke:var(--cw-gauge-color);opacity:.22}
+  [data-cw-usage] circle.cw-progress{stroke:url(#cw-usage-metal);transition:stroke-dasharray .35s ease}
+  [data-cw-usage] circle.cw-glint{stroke:#fff;stroke-width:1.8;opacity:0;transform-origin:17px 17px}
+  [data-cw-usage][data-fresh="true"] circle.cw-glint{animation:cw-usage-glint 30s linear infinite}
+  [data-cw-usage] stop.cw-metal-dark{stop-color:color-mix(in srgb,var(--cw-gauge-color) 65%,#14151c)}
+  [data-cw-usage] stop.cw-metal-light{stop-color:color-mix(in srgb,var(--cw-gauge-color) 60%,white)}
+  [data-cw-usage] stop.cw-metal-main{stop-color:var(--cw-gauge-color)}
+  [data-cw-usage] span{position:relative;color:#f5f7f5;text-shadow:0 1px 2px #000a}
+  @keyframes cw-usage-glint{0%,4%,100%{opacity:0;transform:rotate(131deg)}.7%{opacity:.85}3.3%{opacity:.85;transform:rotate(409deg)}}
+  @media(prefers-reduced-motion:reduce){[data-cw-usage] circle.cw-progress{transition:none}[data-cw-usage] circle.cw-glint{animation:none}}`;
   document.head.append(style);
   let client = null, unsubscribe = null, disposed = false, pending = false;
   const labels = () => ['left', 'Usage unavailable', 'Updated automatically'];
+  const circumference = 2 * Math.PI * 13.5;
+  const sweep = circumference * 278 / 360;
   function locate() {
     const el = document.querySelector('main[data-app-shell-main-surface]');
     let fiber = el?.[Object.keys(el).find(k => k.startsWith('__reactFiber$'))];
@@ -39,19 +50,32 @@
       .filter(w => typeof w?.used_percent === 'number' && Number.isFinite(w.used_percent));
     const at = query?.state.dataUpdatedAt || 0;
     const fresh = windows.length > 0 && Date.now() - at < 120000;
-    let badge = trigger.querySelector('[data-cw-usage]');
+    const profileRow = trigger.closest('.sidebar-item')?.parentElement;
+    if (!profileRow?.parentElement?.closest('nav')) return;
+    const footer = profileRow.parentElement;
+    let badge = footer.querySelector(':scope > [data-cw-usage]');
     if (!badge) {
-      badge = document.createElement('span');
+      badge = document.createElement('div');
       badge.dataset.cwUsage = '';
-      trigger.append(badge);
+      badge.setAttribute('role', 'img');
+      badge.innerHTML = '<svg viewBox="0 0 34 34" aria-hidden="true"><defs><linearGradient id="cw-usage-metal" x1="0" y1="0" x2="1" y2="1"><stop class="cw-metal-dark" offset="0"/><stop class="cw-metal-main" offset=".42"/><stop class="cw-metal-light" offset=".64"/><stop class="cw-metal-main" offset=".82"/><stop class="cw-metal-dark" offset="1"/></linearGradient></defs><circle class="cw-track" cx="17" cy="17" r="13.5" transform="rotate(131 17 17)"></circle><circle class="cw-progress" cx="17" cy="17" r="13.5" transform="rotate(131 17 17)"></circle><circle class="cw-glint" cx="17" cy="17" r="13.5"></circle></svg><span></span>';
+      footer.prepend(badge);
     }
     const [remaining, unavailable, updated] = labels();
     const percent = Math.max(0, Math.min(100, Math.round(100 - Math.max(...windows.map(w => w.used_percent)))));
-    const text = fresh ? `${percent}% ${remaining}` : '—';
+    const text = fresh ? `${percent}%` : '—';
     const title = fresh ? `${updated} · ${new Date(at).toLocaleTimeString()}` : unavailable;
-    if (badge.textContent !== text) badge.textContent = text;
+    if (badge.querySelector('span').textContent !== text) badge.querySelector('span').textContent = text;
+    badge.style.opacity = fresh ? '1' : '.5';
+    badge.dataset.fresh = String(fresh);
+    badge.dataset.level = percent <= 20 ? 'low' : percent <= 60 ? 'mid' : 'high';
+    badge.style.setProperty('--cw-gauge-color', fresh ? `color-mix(in srgb,${percent <= 20 ? '#e65c63' : percent <= 60 ? '#e5a548' : '#4ec58b'} 82%,var(--cw-accent,#cbd5e1))` : 'var(--cw-accent,#cbd5e1)');
+    badge.querySelector('.cw-track').style.strokeDasharray = `${sweep} ${circumference}`;
+    badge.querySelector('.cw-progress').style.strokeDasharray = `${sweep * (fresh ? percent : 0) / 100} ${circumference}`;
+    badge.querySelector('.cw-glint').style.strokeDasharray = `5 ${circumference}`;
     if (badge.title !== title) badge.title = title;
-    if (badge.getAttribute('aria-label') !== title) badge.setAttribute('aria-label', title);
+    const description = fresh ? `${percent}% ${remaining}. ${title}` : unavailable;
+    if (badge.getAttribute('aria-label') !== description) badge.setAttribute('aria-label', description);
   }
   async function refresh() {
     if (disposed) return;
@@ -78,7 +102,7 @@
   document.addEventListener('visibilitychange', refresh);
   window.addEventListener('focus', refresh);
   const api = {
-    version: 2,
+    version: 6,
     refresh,
     dispose() {
       disposed = true; clearInterval(timer); observer.disconnect(); unsubscribe?.();
