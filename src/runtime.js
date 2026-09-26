@@ -4,11 +4,11 @@
   if(!document.querySelector('main[data-app-shell-main-surface]'))throw Error('Unsupported Codex shell');
   if(window.__CODEX_DREAM_SKIN_STATE__)throw Error('Another wallpaper mod is active; preserve it and stop.');
   const KEY='codex-wallpapers.preferences.v1';
-  const defaults={selected:null,enabled:true,fit:'cover',brightness:32,sidebarOpacity:97,composerOpacity:98,cardOpacity:62,sidebarRadius:14,composerRadius:18,settingsRadius:18,paletteMode:'auto',accent:'#cbd5e1',surface:'#121316',sidebar:'#111318',motion:'system'};
+  const defaults={selected:null,enabled:true,fit:'cover',brightness:32,sidebarOpacity:48,composerOpacity:98,cardOpacity:62,sidebarRadius:14,composerRadius:18,settingsRadius:18,paletteMode:'auto',accent:'#cbd5e1',surface:'#121316',sidebar:'#111318',motion:'system'};
   function sanitize(input={}){
     const p={...defaults};
     for(const k of ['selected'])if(input[k]===null||/^[a-f0-9]{24}$/.test(input[k]))p[k]=input[k];
-    for(const [k,min,max] of [['brightness',15,65],['sidebarOpacity',80,100],['composerOpacity',80,100],['cardOpacity',40,100],['sidebarRadius',0,28],['composerRadius',0,28],['settingsRadius',0,28]])if(Number.isFinite(input[k]))p[k]=Math.max(min,Math.min(max,input[k]));
+    for(const [k,min,max] of [['brightness',15,65],['sidebarOpacity',40,100],['composerOpacity',80,100],['cardOpacity',40,100],['sidebarRadius',0,28],['composerRadius',0,28],['settingsRadius',0,28]])if(Number.isFinite(input[k]))p[k]=Math.max(min,Math.min(max,input[k]));
     for(const [k,values] of Object.entries({fit:['cover','contain'],paletteMode:['auto','manual'],motion:['system','play','pause']}))if(values.includes(input[k]))p[k]=input[k];
     for(const k of ['accent','surface','sidebar'])if(/^#[a-f0-9]{6}$/i.test(input[k]))p[k]=input[k];
     if(typeof input.enabled==='boolean')p.enabled=input.enabled;
@@ -29,7 +29,7 @@
     <label><span>Motion</span><select id="motion"><option value="system">Respect reduced motion</option><option value="play">Play</option><option value="pause">Pause</option></select></label>
     <details><summary>Appearance</summary><label><span>Palette</span><select id="paletteMode"><option value="auto">Match wallpaper</option><option value="manual">Custom colors</option></select></label>
     <label><span>Accent</span><input id="accent" type="color"></label><label><span>Surfaces</span><input id="surface" type="color"></label><label><span>Sidebar</span><input id="sidebar" type="color"></label>
-    ${[['sidebarOpacity','Sidebar opacity',80,100],['composerOpacity','Composer opacity',80,100],['cardOpacity','Suggestion opacity',40,100],['sidebarRadius','Sidebar corners',0,28],['composerRadius','Composer corners',0,28],['settingsRadius','Settings corners',0,28]].map(([id,label,min,max])=>`<label><span>${label}<output id="${id}-out"></output></span><input id="${id}" aria-label="${label}" type="range" min="${min}" max="${max}"></label>`).join('')}</details>
+    ${[['sidebarOpacity','Sidebar opacity',40,100],['composerOpacity','Composer opacity',80,100],['cardOpacity','Suggestion opacity',40,100],['sidebarRadius','Sidebar corners',0,28],['composerRadius','Composer corners',0,28],['settingsRadius','Settings corners',0,28]].map(([id,label,min,max])=>`<label><span>${label}<output id="${id}-out"></output></span><input id="${id}" aria-label="${label}" type="range" min="${min}" max="${max}"></label>`).join('')}</details>
     <div id="actions"><button id="toggle">Disable wallpaper</button><button id="reset">Reset settings</button><button id="help">Add wallpapers</button></div></aside></div><p id="status" role="status">Preparing your library…</p></dialog>`;
   document.body.append(host);const q=id=>root.getElementById(id),dialog=root.querySelector('dialog');
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');

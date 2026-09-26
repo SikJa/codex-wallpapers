@@ -24,8 +24,8 @@ try{
  assert.equal(await page.locator('[data-cw-usage] .cw-progress').evaluate(e=>getComputedStyle(e).stroke),'url("#cw-usage-metal")');
  const firstAccent=await page.locator('[data-cw-usage] .cw-metal-main').first().evaluate(e=>getComputedStyle(e).stopColor);
  await page.evaluate(()=>document.documentElement.style.setProperty('--cw-accent','#dca76b'));
- assert.notEqual(await page.locator('[data-cw-usage] .cw-metal-main').first().evaluate(e=>getComputedStyle(e).stopColor),firstAccent);
- assert.equal(await page.locator('[data-cw-usage]').getAttribute('data-level'),'high');
+ assert.equal(await page.locator('[data-cw-usage] .cw-metal-main').first().evaluate(e=>getComputedStyle(e).stopColor),firstAccent);
+ assert.equal(await page.locator('[data-cw-usage] .cw-glint').evaluate(e=>getComputedStyle(e).animationDuration),'30s');
  assert.equal(await page.evaluate(()=>window.calls),0);
  await page.clock.fastForward(31000);
  assert.equal(await page.evaluate(()=>window.calls),1);
@@ -34,13 +34,12 @@ try{
  // Native updates reach the badge without opening a menu.
  await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=65;for(const f of subscribers)f({query:nativeQuery})});
  assert.equal(await page.locator('[data-cw-usage]').textContent(),'35%');assert.equal(await page.locator('[role=menu]').count(),0);
- assert.equal(await page.locator('[data-cw-usage]').getAttribute('data-level'),'mid');
  await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=80;nativeQuery.state.data.rate_limit.secondary_window.used_percent=40;for(const f of subscribers)f({query:nativeQuery})});
- assert.equal(await page.locator('[data-cw-usage]').getAttribute('data-level'),'low');
+ assert.equal(await page.locator('[data-cw-usage]').textContent(),'20%');
  await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=40;nativeQuery.state.data.rate_limit.secondary_window.used_percent=20;for(const f of subscribers)f({query:nativeQuery})});
- assert.equal(await page.locator('[data-cw-usage]').getAttribute('data-level'),'high');
+ assert.equal(await page.locator('[data-cw-usage]').textContent(),'60%');
  await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=20;nativeQuery.state.data.rate_limit.secondary_window.used_percent=39;for(const f of subscribers)f({query:nativeQuery})});
- assert.equal(await page.locator('[data-cw-usage]').getAttribute('data-level'),'high');
+ assert.equal(await page.locator('[data-cw-usage]').textContent(),'61%');
  await page.evaluate(()=>{nativeQuery.state.data.rate_limit.primary_window.used_percent=65;nativeQuery.state.data.rate_limit.secondary_window.used_percent=38;for(const f of subscribers)f({query:nativeQuery})});
  await page.locator('button').evaluate(e=>e.setAttribute('aria-label','Open settings'));
  assert.equal(await page.locator('[data-cw-usage]').textContent(),'35%');

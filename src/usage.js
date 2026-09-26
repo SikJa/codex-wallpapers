@@ -1,6 +1,6 @@
 // Reads only the existing native usage query; no separate authentication or storage.
 (() => {
-  if (window.__CW_USAGE__?.version === 6) return window.__CW_USAGE__;
+  if (window.__CW_USAGE__?.version === 7) return window.__CW_USAGE__;
   window.__CW_USAGE__?.dispose?.();
   document.getElementById('cw-usage-style')?.remove();
   const selector = 'button[aria-label="Abrir menú de perfil"],button[aria-label="Open profile menu"],button[aria-label="Abrir menu de perfil"],button[aria-label="Open settings"],button[aria-label="Abrir configuración"]';
@@ -10,18 +10,18 @@
     .sort((a, b) => (b.state.dataUpdatedAt || 0) - (a.state.dataUpdatedAt || 0))[0] || null;
   const style = document.createElement('style');
   style.id = 'cw-usage-style';
-  style.textContent = `[data-cw-usage]{width:34px;height:34px;flex:none;position:relative;display:grid;place-items:center;--cw-gauge-color:var(--cw-accent,#cbd5e1);font:700 9px/1 system-ui,sans-serif;font-variant-numeric:tabular-nums;pointer-events:none}
+  style.textContent = `[data-cw-usage]{width:34px;height:34px;flex:none;position:relative;display:grid;place-items:center;font:700 9px/1 system-ui,sans-serif;font-variant-numeric:tabular-nums;pointer-events:none}
   [data-cw-usage] svg{position:absolute;inset:0;width:34px;height:34px;overflow:visible}
   [data-cw-usage] circle{fill:none;stroke-width:3;stroke-linecap:round}
-  [data-cw-usage] circle.cw-track{stroke:var(--cw-gauge-color);opacity:.22}
+  [data-cw-usage] circle.cw-track{stroke:#a8adb5;opacity:.4}
   [data-cw-usage] circle.cw-progress{stroke:url(#cw-usage-metal);transition:stroke-dasharray .35s ease}
-  [data-cw-usage] circle.cw-glint{stroke:#fff;stroke-width:1.8;opacity:0;transform-origin:17px 17px}
+  [data-cw-usage] circle.cw-glint{stroke:#fff;stroke-width:2.5;opacity:0;transform-origin:17px 17px}
   [data-cw-usage][data-fresh="true"] circle.cw-glint{animation:cw-usage-glint 30s linear infinite}
-  [data-cw-usage] stop.cw-metal-dark{stop-color:color-mix(in srgb,var(--cw-gauge-color) 65%,#14151c)}
-  [data-cw-usage] stop.cw-metal-light{stop-color:color-mix(in srgb,var(--cw-gauge-color) 60%,white)}
-  [data-cw-usage] stop.cw-metal-main{stop-color:var(--cw-gauge-color)}
-  [data-cw-usage] span{position:relative;color:#f5f7f5;text-shadow:0 1px 2px #000a}
-  @keyframes cw-usage-glint{0%,4%,100%{opacity:0;transform:rotate(131deg)}.7%{opacity:.85}3.3%{opacity:.85;transform:rotate(409deg)}}
+  [data-cw-usage] stop.cw-metal-dark{stop-color:#434850}
+  [data-cw-usage] stop.cw-metal-light{stop-color:#fff}
+  [data-cw-usage] stop.cw-metal-main{stop-color:#bcc3cd}
+  [data-cw-usage] span{position:relative;color:#fff;text-shadow:0 1px 2px #000,0 0 3px #ffffff55}
+  @keyframes cw-usage-glint{0%,4%,100%{opacity:0;transform:rotate(131deg)}.5%{opacity:1}3.5%{opacity:1;transform:rotate(409deg)}}
   @media(prefers-reduced-motion:reduce){[data-cw-usage] circle.cw-progress{transition:none}[data-cw-usage] circle.cw-glint{animation:none}}`;
   document.head.append(style);
   let client = null, unsubscribe = null, disposed = false, pending = false;
@@ -68,11 +68,9 @@
     if (badge.querySelector('span').textContent !== text) badge.querySelector('span').textContent = text;
     badge.style.opacity = fresh ? '1' : '.5';
     badge.dataset.fresh = String(fresh);
-    badge.dataset.level = percent <= 20 ? 'low' : percent < 60 ? 'mid' : 'high';
-    badge.style.setProperty('--cw-gauge-color', fresh ? `color-mix(in srgb,${percent <= 20 ? '#e65c63' : percent < 60 ? '#e5a548' : '#4ec58b'} 82%,var(--cw-accent,#cbd5e1))` : 'var(--cw-accent,#cbd5e1)');
     badge.querySelector('.cw-track').style.strokeDasharray = `${sweep} ${circumference}`;
     badge.querySelector('.cw-progress').style.strokeDasharray = `${sweep * (fresh ? percent : 0) / 100} ${circumference}`;
-    badge.querySelector('.cw-glint').style.strokeDasharray = `5 ${circumference}`;
+    badge.querySelector('.cw-glint').style.strokeDasharray = `8 ${circumference}`;
     if (badge.title !== title) badge.title = title;
     const description = fresh ? `${percent}% ${remaining}. ${title}` : unavailable;
     if (badge.getAttribute('aria-label') !== description) badge.setAttribute('aria-label', description);
@@ -102,7 +100,7 @@
   document.addEventListener('visibilitychange', refresh);
   window.addEventListener('focus', refresh);
   const api = {
-    version: 6,
+    version: 7,
     refresh,
     dispose() {
       disposed = true; clearInterval(timer); observer.disconnect(); unsubscribe?.();
