@@ -6,7 +6,7 @@
 
 ![Codex Wallpapers — Tu espacio. Tu Codex.](docs/assets/hero.jpg)
 
-**Hacé de Codex un espacio más tuyo.** Elegí una imagen o un video y dejá que los colores lo acompañen. Cambiá de fondo desde **Perfil → Fondos** y ajustá brillo, transparencia y esquinas.
+**Hacé de Codex un espacio más tuyo.** Elegí una imagen o un video y dejá que los colores lo acompañen. Cambiá de fondo desde **Perfil → Wallpapers** y ajustá brillo, transparencia y esquinas.
 
 ## La misma interfaz. Otro ambiente.
 
@@ -45,7 +45,7 @@ Adjuntale una imagen o un video a tu agente en Codex y pedile:
 
 > Importá este fondo en codex-wallpapers, conservá el original y comprobá su resolución. No reinicies Codex sin preguntarme.
 
-Después elegilo en **Perfil → Fondos**. La biblioteca empieza vacía. Recomendamos **Wallpaper Engine en Steam** como fuente: usá una imagen o video local que tengas permiso de usar. Las escenas del Workshop necesitan una imagen o un video grabado/exportado. [Guía de medios](docs/MEDIA.md).
+Después elegilo en **Perfil → Wallpapers**. La biblioteca empieza vacía. Recomendamos **Wallpaper Engine en Steam** como fuente: usá una imagen o video local que tengas permiso de usar. Las escenas del Workshop necesitan una imagen o un video grabado/exportado. [Guía de medios](docs/MEDIA.md).
 
 ## Seguridad y estado
 

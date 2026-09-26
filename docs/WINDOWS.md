@@ -6,7 +6,7 @@ El auxiliar observa ventanas cada dos segundos. No reinicia procesos. Sale cuand
 
 ## Por qué se usa otro acceso
 
-El acceso original abre Codex normalmente, sin habilitar el mecanismo de personalización. No lo modificamos. Cuando Codex ya está abierto, el acceso personalizado tampoco lo cierra ni cambia su modo de inicio: el lanzador termina con estado `already-open`.
+El acceso original abre Codex normalmente, sin habilitar la personalización. Si Codex ya está abierto, el acceso personalizado solo trae esa ventana al frente (`already-open-activated`); no puede agregar el tema a ese proceso. Para cargarlo, salí de Codex por **Archivo → Salir** (Ctrl+Q) y abrí **Codex Wallpapers**. Cerrar solo la ventana puede dejar el proceso activo.
 
 Los dos accesos no son dos instalaciones de Codex. Se lanza el mismo paquete oficial. El ejecutable auxiliar usa el AppUserModelID del paquete, y el `.lnk` también recibe esa identidad, para que Windows agrupe correctamente la ventana.
 

@@ -6,7 +6,7 @@
 
 ![Codex Wallpapers — Your space. Your Codex.](docs/assets/hero.jpg)
 
-**Make Codex feel like your space.** Pick your own image or video and let the colors follow. Change wallpapers from **Profile → Fondos**, then adjust brightness, transparency and rounded corners.
+**Make Codex feel like your space.** Pick your own image or video and let the colors follow. Change wallpapers from **Profile → Wallpapers**, then adjust brightness, transparency and rounded corners.
 
 ## One interface. A different mood.
 
@@ -39,13 +39,13 @@ You need Codex Desktop for Windows, Node.js 22+, and FFmpeg/ffprobe for importin
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1
 ```
 
-Open **Codex Wallpapers** from Start when you next open Codex. Pin **that shortcut** to the taskbar: it uses the locally installed official icon and launches the same Codex app with personalization. The original shortcut stays available. [Shortcut details (ES)](docs/WINDOWS.md).
+Open **Codex Wallpapers** from Start when you next open Codex. Pin **that shortcut** to the taskbar: it uses the locally installed official icon and launches the same Codex app with personalization. If Codex is already running from its original shortcut, fully quit it first (File → Quit, Ctrl+Q). The original shortcut stays available. [Shortcut details (ES)](docs/WINDOWS.md).
 
 Attach an image or video to your Codex agent and ask:
 
 > Import this wallpaper into codex-wallpapers, preserve the original and check its resolution. Don't restart Codex without asking me.
 
-Then choose it in **Profile → Fondos**. The library starts empty. **Wallpaper Engine on Steam** is a suggested source; use a local image or video you have permission to use. Workshop scenes need an image or a recorded/exported video. [Media guide (ES)](docs/MEDIA.md).
+Then choose it in **Profile → Wallpapers**. The library starts empty. **Wallpaper Engine on Steam** is a suggested source; use a local image or video you have permission to use. Workshop scenes need an image or a recorded/exported video. [Media guide (ES)](docs/MEDIA.md).
 
 ## Safety & status
 
