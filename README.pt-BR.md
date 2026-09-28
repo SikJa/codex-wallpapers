@@ -31,6 +31,7 @@ A galeria mostra exemplos; os fundos não vêm incluídos. [Créditos dos papéi
 - **Seu espaço:** enquadramento sem distorção, preferências salvas e suporte a várias janelas.
 - **Memória controlada:** cada janela recebe as miniaturas do catálogo e apenas o wallpaper completo em uso. Janelas ocultas aguardam antes de carregar animações.
 - **Prévia de uso:** clicar no indicador lateral abre o painel; somente o link interno abre a tela nativa de Uso. Ele mostra o limite e a redefinição nativos, além do histórico de tokens calculado das sessões deste computador. O botão `+` permite escolher uma foto. [Origem e limites dos dados](docs/USAGE.md).
+- **Overlay para OBS:** o orbe animado, a porcentagem ao vivo e a contagem regressiva podem aparecer abaixo da câmera. [Configuração](docs/OBS_USAGE_OVERLAY.md).
 
 ## Começar
 

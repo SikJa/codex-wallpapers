@@ -12,7 +12,8 @@ try{
   await page.goto(`http://127.0.0.1:${server.address().port}/`);
   await page.setContent(`<main data-app-shell-main-surface></main><nav><div class="rail-footer"><div class="sidebar-item"><button id="profile" aria-label="Open profile menu"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg=="></button></div></div></nav><div role="menu" aria-labelledby="profile"><div role="menuitem">Test User<br>Pro</div><div role="menuitem" id="native-usage">Usage</div></div>`);
   await page.evaluate(()=>{
-    window.nativeQuery={queryKey:['rate-limit-status','user','account'],state:{dataUpdatedAt:Date.now(),fetchStatus:'idle',data:{plan_type:'pro',rate_limit:{primary_window:{used_percent:30,reset_at:1791053259},secondary_window:{used_percent:42,reset_at:1791053259}}}}};
+    const reset=Math.floor(Date.now()/1000)+5*86400+2*3600+120;
+    window.nativeQuery={queryKey:['rate-limit-status','user','account'],state:{dataUpdatedAt:Date.now(),fetchStatus:'idle',data:{plan_type:'pro',rate_limit:{primary_window:{used_percent:30,reset_at:reset},secondary_window:{used_percent:42,reset_at:reset}}}}};
     const cache={findAll:()=>[window.nativeQuery],subscribe:()=>()=>{}};
     document.querySelector('main').__reactFiber$test={memoizedProps:{value:{getQueryCache:()=>cache,refetchQueries:async()=>{}}},return:null};
     document.querySelector('#native-usage').addEventListener('click',()=>{window.usageClicked=true});
@@ -39,6 +40,7 @@ try{
   assert.equal(await page.locator('.cwp-plan').textContent(),'Pro');
   assert.match(await page.locator('.cwp-stats').textContent(),/12\.3K/);
   assert.match(await page.locator('.cwp-limit').textContent(),/58% remaining/);
+  assert.match(await page.locator('.cwp-limit').textContent(),/(?:Resets in|Se restablece en) 5 d 2 h/);
   assert.equal(await page.locator('.cwp-map button').count(),364);
   const panelSize=await page.locator('.cwp-panel').evaluate(e=>({scroll:e.scrollHeight,client:e.clientHeight}));
   assert.ok(panelSize.scroll<=panelSize.client+1,`Usage preview unexpectedly scrolls at 1200×800: ${JSON.stringify(panelSize)}`);

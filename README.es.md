@@ -31,6 +31,7 @@ La galería muestra ejemplos; los fondos no vienen incluidos. [Créditos de los 
 - **Tu espacio:** encuadre sin estirar, preferencias guardadas y soporte para varias ventanas.
 - **Memoria controlada:** cada ventana recibe las miniaturas del catálogo y solamente el fondo completo que está usando. Las ventanas ocultas esperan antes de cargar animaciones.
 - **Vista de uso:** al hacer clic en el indicador lateral se abre el panel; solo el enlace dentro lleva a Uso. Muestra límite y reinicio nativos, más historial de tokens calculado de las sesiones de esta PC. El botón `+` permite elegir una foto propia. [Qué datos son reales y cuáles no](docs/USAGE.md).
+- **Overlay para OBS:** el orbe animado, el porcentaje en vivo y la cuenta regresiva del reinicio pueden mostrarse debajo de la cámara. [Configuración](docs/OBS_USAGE_OVERLAY.md).
 
 ## Empezar
 

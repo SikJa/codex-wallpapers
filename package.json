@@ -16,6 +16,8 @@
     "list": "node src/cli.mjs list",
     "apply": "node src/apply.mjs",
     "build:usage": "vite build --config vite.usage.config.mjs",
+    "build:obs": "vite build --config vite.obs.config.mjs",
+    "obs": "node obs-overlay/server.mjs",
     "typecheck": "tsc -p tsconfig.usage.json --noEmit"
   },
   "license": "MIT",
