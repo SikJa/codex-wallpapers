@@ -13,4 +13,4 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\start-obs-over
 
 In OBS, add a **Browser Source** with URL `http://127.0.0.1:8794/`, width **300**, height **100**, and a transparent background. Place it beneath the camera in your scene. Keep the source active when hidden if you want the orb to animate continuously. The percentage is refreshed from Codex; the countdown updates every minute. An unavailable state is shown until Codex Wallpapers is running and the native usage response has arrived.
 
-The OBS source is separate from StreamElements alerts: a StreamElements cloud overlay cannot read a local `127.0.0.1` service in a viewer's browser. OBS can composite this local source alongside a StreamElements alert source in the same scene.
+This is a local OBS source, separate from the overlays in your StreamElements dashboard. Add the local URL directly to OBS; OBS composites it with any StreamElements alert source in the same scene. Viewers see the resulting video, not the local URL.
