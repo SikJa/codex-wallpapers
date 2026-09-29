@@ -5,7 +5,8 @@
 - Add Windows 26.928.1915.0 after inspecting the official package's shell, profile-menu and native usage query contracts, with isolated runtime tests.
 - Exclude image-generation limit queries even when they contain a rate-limit payload; only account usage feeds the sidebar and OBS percentage.
 - Recover the OBS data connection within the next 5-second poll when Codex becomes available, while retaining the 45-second polling cadence for a connected app.
-- Live startup on 26.928 and clean-install validation remain pending; an unsupported version still opens Codex normally.
+- Launch the local OBS server through a limited, interactive Task Scheduler task so it does not inherit Codex's process lifetime. The existing login shortcut continues to start it automatically.
+- Live 26.928 usage verified: the transparent browser source renders the same native remaining percentage and reset countdown as the app. Clean-install validation remains pending; an unsupported version still opens Codex normally.
 
 ## 0.1.6 — Preview
 

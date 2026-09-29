@@ -2,7 +2,9 @@
 
 ## Codex 26.928.1915.0
 
-The installed official ASAR retains `main[data-app-shell-main-surface]`, the profile footer labels and the native `rate-limit-status` query (both one-part polling and account-scoped SSE keys). Image-generation queries share that prefix and may also contain rate limits; the regression test now supplies such a payload with a newer timestamp to verify it cannot replace account usage. Package inspection and isolated suites do not prove live startup; that verification remains pending.
+The installed official ASAR retains `main[data-app-shell-main-surface]`, the profile footer labels and the native `rate-limit-status` query (both one-part polling and account-scoped SSE keys). Image-generation queries share that prefix and may also contain rate limits; the regression test now supplies such a payload with a newer timestamp to verify it cannot replace account usage.
+
+After an authorized restart, the user confirmed the live personalization. The local OBS source was then checked in isolated Chrome at its configured canvas size: it rendered the native remaining percentage, animated orb and reset countdown with a transparent canvas. The server runs as a limited interactive scheduled task, independent of Codex's process tree. This verifies the browser source; final composition inside OBS and clean-install validation remain separate checks.
 
 ## Automatizada
 

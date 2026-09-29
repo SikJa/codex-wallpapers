@@ -21,7 +21,27 @@ if($existing){
 }else{
   $out=Join-Path $storage 'obs-overlay.log'
   $err=Join-Path $storage 'obs-overlay-error.log'
-  Start-Process -FilePath $node -ArgumentList ('"'+$entry+'"') -WorkingDirectory $repository -WindowStyle Hidden -RedirectStandardOutput $out -RedirectStandardError $err|Out-Null
+  # A process spawned directly by Codex can inherit its Windows job and disappear
+  # when Codex exits. Task Scheduler starts the server outside that process tree.
+  # The existing Startup shortcut still invokes this entrypoint on login.
+  $runner=Join-Path $storage 'obs-overlay-run.ps1'
+  $quote={param([string]$value) "'"+$value.Replace("'","''")+"'"}
+  $body=@(
+    "`$env:CODEX_WALLPAPERS_DATA = $(& $quote $storage)",
+    "`$env:CW_OBS_PORT = '$port'",
+    "Set-Location -LiteralPath $(& $quote $repository)",
+    "& $(& $quote $node) $(& $quote $entry) 1>> $(& $quote $out) 2>> $(& $quote $err)"
+  ) -join "`r`n"
+  Set-Content -LiteralPath $runner -Value $body -Encoding UTF8
+  $hash=[Security.Cryptography.SHA256]::Create()
+  try{$suffix=([BitConverter]::ToString($hash.ComputeHash([Text.Encoding]::UTF8.GetBytes($storage.ToLowerInvariant())))).Replace('-','').Substring(0,12)}finally{$hash.Dispose()}
+  $taskName="Codex Wallpapers OBS $port $suffix"
+  $account=[Security.Principal.WindowsIdentity]::GetCurrent().Name
+  $action=New-ScheduledTaskAction -Execute (Get-Command powershell.exe).Source -Argument ('-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "'+$runner+'"') -WorkingDirectory $repository
+  $principal=New-ScheduledTaskPrincipal -UserId $account -LogonType Interactive -RunLevel Limited
+  $settings=New-ScheduledTaskSettingsSet -ExecutionTimeLimit ([TimeSpan]::Zero) -MultipleInstances IgnoreNew -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+  Register-ScheduledTask -TaskName $taskName -Action $action -Principal $principal -Settings $settings -Description 'Local OBS usage server, independent of Codex. Does not launch or restart Codex.' -Force|Out-Null
+  Start-ScheduledTask -TaskName $taskName
   $ready=$false
   for($i=0;$i -lt 20;$i++){
     try{$response=Invoke-WebRequest "http://127.0.0.1:$port/state" -TimeoutSec 1 -UseBasicParsing;if($response.StatusCode -eq 200){$ready=$true;break}}catch{}

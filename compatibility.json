@@ -11,5 +11,5 @@
     "26.928.1915.0"
   ],
   "status": "preview",
-  "note": "Preview. Codex 26.928.1915.0 retains the native shell, profile-menu and rate-limit query contracts in its official package; isolated runtime tests pass. Live startup validation for 26.928 and clean-install validation remain pending. See docs/TESTING.md."
+  "note": "Preview. Codex 26.928.1915.0: isolated runtime tests pass, live personalization confirmed after an authorized restart, and native usage verified in the transparent OBS browser source. Clean-install validation remains pending. See docs/TESTING.md."
 }
