@@ -38,7 +38,7 @@ const readNative=`(async()=>{
       fiber=fiber.return;
     }
     const query=client?.getQueryCache().findAll({queryKey:['rate-limit-status'],exact:false})
-      .filter(q=>q.queryKey[0]==='rate-limit-status'&&q.state.data?.rate_limit)
+      .filter(q=>q.queryKey[0]==='rate-limit-status'&&q.queryKey[1]!=='image-generation'&&q.state.data?.rate_limit)
       .sort((a,b)=>(b.state.dataUpdatedAt||0)-(a.state.dataUpdatedAt||0))[0];
     if(query&&query.state.fetchStatus!=='fetching'){
       await client.refetchQueries({predicate:q=>q===query},{cancelRefetch:false});
@@ -66,8 +66,8 @@ async function update(){
     current={available:true,percent:Math.max(0,Math.min(100,Math.round(chosen.percent))),updatedAt:chosen.updatedAt,resetAt:chosen.resetAt??null,accent:validAccent(chosen.accent)}
   }catch{lastIdentity='';current=offline()}
 }
-let updating=false
-async function tick(){if(updating)return;updating=true;try{await update()}finally{updating=false}}
+let updating=false,lastPoll=0
+async function tick(){if(updating||(current.available&&Date.now()-lastPoll<45000))return;updating=true;lastPoll=Date.now();try{await update()}finally{updating=false}}
 const server=http.createServer(async(req,res)=>{
   if(!['127.0.0.1','localhost'].includes((req.headers.host||'').split(':')[0])){res.writeHead(403).end();return}
   res.setHeader('Cache-Control','no-store')
@@ -89,5 +89,7 @@ const server=http.createServer(async(req,res)=>{
 await fs.access(path.join(dist,'index.html'))
 server.listen(port,'127.0.0.1',()=>console.log(`OBS overlay: http://127.0.0.1:${port}/`))
 void tick()
-const timer=setInterval(tick,45000)
+// Recover promptly when Codex opens after OBS or finishes installing its runtime.
+// Native refetches remain bounded by the 45-second freshness check above.
+const timer=setInterval(tick,5000)
 server.on('close',()=>clearInterval(timer))

@@ -6,7 +6,7 @@
   const selector = 'button[aria-label="Abrir menú de perfil"],button[aria-label="Open profile menu"],button[aria-label="Abrir menu de perfil"],button[aria-label="Open settings"],button[aria-label="Abrir configuración"]';
   const queryKey = ['rate-limit-status'];
   const findUsageQuery = () => client?.getQueryCache().findAll({queryKey, exact: false})
-    .filter(q => q.queryKey[0] === queryKey[0] && q.state.data?.rate_limit)
+    .filter(q => q.queryKey[0] === queryKey[0] && q.queryKey[1] !== 'image-generation' && q.state.data?.rate_limit)
     .sort((a, b) => (b.state.dataUpdatedAt || 0) - (a.state.dataUpdatedAt || 0))[0] || null;
   const resetTime = value => {
     if(typeof value === 'string' && !/^\d+$/.test(value)) {const parsed=Date.parse(value);return Number.isFinite(parsed)?parsed:null;}

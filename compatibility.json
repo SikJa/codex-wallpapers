@@ -7,8 +7,9 @@
     "26.917.8451.0",
     "26.924.1866.0",
     "26.924.2738.0",
-    "26.924.6891.0"
+    "26.924.6891.0",
+    "26.928.1915.0"
   ],
   "status": "preview",
-  "note": "Preview. Codex 26.924.2738.0 passed a full-process start from the customized shortcut, with wallpaper video, profile picker and usage indicator verified in the official app. Isolated tests pass. Clean-install validation remains. See docs/TESTING.md."
+  "note": "Preview. Codex 26.928.1915.0 retains the native shell, profile-menu and rate-limit query contracts in its official package; isolated runtime tests pass. Live startup validation for 26.928 and clean-install validation remain pending. See docs/TESTING.md."
 }

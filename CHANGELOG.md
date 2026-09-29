@@ -1,5 +1,12 @@
 # Cambios
 
+## Codex 26.928 compatibility
+
+- Add Windows 26.928.1915.0 after inspecting the official package's shell, profile-menu and native usage query contracts, with isolated runtime tests.
+- Exclude image-generation limit queries even when they contain a rate-limit payload; only account usage feeds the sidebar and OBS percentage.
+- Recover the OBS data connection within the next 5-second poll when Codex becomes available, while retaining the 45-second polling cadence for a connected app.
+- Live startup on 26.928 and clean-install validation remain pending; an unsupported version still opens Codex normally.
+
 ## 0.1.6 — Preview
 
 - Stop copying the entire wallpaper library into every Codex renderer.
