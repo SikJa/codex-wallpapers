@@ -27,6 +27,9 @@ try{
  await page.evaluate(()=>document.documentElement.style.setProperty('--cw-accent','#dca76b'));
  assert.equal(await page.locator('[data-cw-usage] .cw-metal-main').first().evaluate(e=>getComputedStyle(e).stopColor),firstAccent);
  assert.equal(await page.locator('[data-cw-usage] .cw-glint').evaluate(e=>getComputedStyle(e).animationDuration),'30s');
+ // Codex 26.924.2738.0 moved the native status query to a one-part key.
+ await page.evaluate(async()=>{nativeQuery.queryKey=['rate-limit-status'];await window.__CW_USAGE__.refresh()});
+ assert.equal(await page.locator('[data-cw-usage]').textContent(),'62%');
  assert.equal(await page.evaluate(()=>window.calls),0);
  await page.clock.fastForward(31000);
  assert.equal(await page.evaluate(()=>window.calls),1);

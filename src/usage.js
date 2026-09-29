@@ -1,12 +1,12 @@
 // Reads only the existing native usage query; no separate authentication or storage.
 (() => {
-  if (window.__CW_USAGE__?.version === 7) return window.__CW_USAGE__;
+  if (window.__CW_USAGE__?.version === 8) return window.__CW_USAGE__;
   window.__CW_USAGE__?.dispose?.();
   document.getElementById('cw-usage-style')?.remove();
   const selector = 'button[aria-label="Abrir menú de perfil"],button[aria-label="Open profile menu"],button[aria-label="Abrir menu de perfil"],button[aria-label="Open settings"],button[aria-label="Abrir configuración"]';
   const queryKey = ['rate-limit-status'];
   const findUsageQuery = () => client?.getQueryCache().findAll({queryKey, exact: false})
-    .filter(q => q.queryKey.length === 3 && q.state.data?.rate_limit)
+    .filter(q => q.queryKey[0] === queryKey[0] && q.state.data?.rate_limit)
     .sort((a, b) => (b.state.dataUpdatedAt || 0) - (a.state.dataUpdatedAt || 0))[0] || null;
   const resetTime = value => {
     if(typeof value === 'string' && !/^\d+$/.test(value)) {const parsed=Date.parse(value);return Number.isFinite(parsed)?parsed:null;}
@@ -100,7 +100,7 @@
       if (found !== client) {
         unsubscribe?.(); client = found;
         unsubscribe = client?.getQueryCache().subscribe(event => {
-          if (event.query?.queryKey?.[0] === queryKey[0] && event.query.queryKey.length === 3) render();
+          if (event.query?.queryKey?.[0] === queryKey[0] && event.query.state.data?.rate_limit) render();
         });
       }
       render();
@@ -108,7 +108,7 @@
       const query = findUsageQuery();
       if (!query || query.state.fetchStatus === 'fetching' || Date.now() - query.state.dataUpdatedAt < 30000) return;
       pending = true;
-      await client.refetchQueries({predicate: query => query.queryKey[0] === queryKey[0] && query.queryKey.length === 3}, {cancelRefetch: false});
+      await client.refetchQueries({predicate: candidate => candidate === query}, {cancelRefetch: false});
     } catch { /* Native query unavailable after an app update: keep the app usable. */ }
     finally { pending = false; render(); }
   }
@@ -118,7 +118,7 @@
   document.addEventListener('visibilitychange', refresh);
   window.addEventListener('focus', refresh);
   const api = {
-    version: 7,
+    version: 8,
     refresh,
     getSnapshot:nativeSnapshot,
     dispose() {

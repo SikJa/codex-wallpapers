@@ -38,9 +38,10 @@ const readNative=`(async()=>{
       fiber=fiber.return;
     }
     const query=client?.getQueryCache().findAll({queryKey:['rate-limit-status'],exact:false})
-      .find(q=>q.queryKey.length===3&&q.state.data?.rate_limit);
+      .filter(q=>q.queryKey[0]==='rate-limit-status'&&q.state.data?.rate_limit)
+      .sort((a,b)=>(b.state.dataUpdatedAt||0)-(a.state.dataUpdatedAt||0))[0];
     if(query&&query.state.fetchStatus!=='fetching'){
-      await client.refetchQueries({predicate:q=>q.queryKey[0]==='rate-limit-status'&&q.queryKey.length===3},{cancelRefetch:false});
+      await client.refetchQueries({predicate:q=>q===query},{cancelRefetch:false});
     }
     snapshot=usage.getSnapshot();
   }
