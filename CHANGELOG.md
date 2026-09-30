@@ -6,6 +6,7 @@
 - Back up wallpaper selection and appearance settings in the local data folder's `preferences.json`, rather than relying exclusively on Electron browser storage.
 - Restore the newest settings on startup, migrate existing selections, and checkpoint changes during the listener's two-second cycle. Imported media remain in the local library.
 - Add regressions for stale backup writes and restoration into a fresh browser storage partition. Live restart verification is recorded separately in TESTING.md.
+- Remove the native composer's white inset halo while the wallpaper theme is active; preserve native layout and rounded corners.
 
 ## Console-free OBS startup
 

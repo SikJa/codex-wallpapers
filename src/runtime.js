@@ -113,5 +113,3 @@
   const api={preferencesSnapshot:()=>({schema:1,updatedAt:savedAt,settings:{...prefs}}),restorePreferences(record){if(record?.schema!==1||!Number.isFinite(record.updatedAt)||record.updatedAt<=savedAt)return false;prefs=sanitize(record.settings);savedAt=record.updatedAt;try{localStorage.setItem(KEY,JSON.stringify({...prefs,_savedAt:savedAt}));}catch{}return true;},append,catalog,supply,reject,takeRequests,select,open,close,dispose,ids:()=>[...items.keys()],status:()=>({count:items.size,selected:prefs.selected,enabled:prefs.enabled,media:!!current,pending:requests.size+accepting.size,profileButton:!!document.querySelector('[data-cw-menu]'),settings:{...prefs}}),ready(){if(!savedAt&&prefs.selected)save();renderControls();updateFilter();if(items.has(prefs.selected))select(prefs.selected,{persist:false});else{notice(items.size?'Choose your first wallpaper.':'Your library is empty. Add your first wallpaper with your agent.');}return api.status();}};
   window.__CODEX_WALLPAPERS_PUBLIC__=api;renderControls();return 'installed';
 })
-
-

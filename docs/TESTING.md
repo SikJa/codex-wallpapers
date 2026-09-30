@@ -2,7 +2,9 @@
 
 ## Codex 26.928.2636.0 and disk preferences
 
-The official package retains the main shell and native profile and rate-limit query contracts. Isolated tests recover the selected media in a fresh browser context with empty localStorage, using `preferences.json` in the local library folder. Unit tests prevent an older window checkpoint from overwriting newer settings and cover a malformed backup. Existing browser preferences migrate on startup; the listener checkpoints changes every two seconds. Live restart verification is pending at preparation time.
+The official package retains the main shell and native profile and rate-limit query contracts. Isolated tests recover the selected media in a fresh browser context with empty localStorage, using `preferences.json` in the local library folder. Unit tests prevent an older window checkpoint from overwriting newer settings and cover a malformed backup. Existing browser preferences migrate on startup; the listener checkpoints changes every two seconds.
+
+An authorized restart was executed by an independent Windows scheduled task with a one-use lock. The real 26.928.2636.0 process restored the existing selected image and appearance settings; the disk backup matched the renderer's selection. The sidebar orb and OBS source returned the same native remaining percentage and reset timestamp. The user confirmed that personalization returned. The local metrics preview had not yet received its scan at that verification point, and clean-install validation remains pending.
 
 ## Codex 26.928.1915.0
 
