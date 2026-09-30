@@ -1,5 +1,11 @@
 # Cambios
 
+## Console-free OBS startup
+
+- Compile a local WinExe launcher that starts Node with `CreateNoWindow`, redirects logs to files and prevents duplicate instances with a mutex.
+- Use that launcher for the scheduled task and login shortcut. `-WindowStyle Hidden` alone can still leave a visible Windows Terminal window on systems using it as the default console host.
+- Keep the same local overlay URL and preserve the independent lifetime of the OBS server.
+
 ## Codex 26.928 compatibility
 
 - Add Windows 26.928.1915.0 after inspecting the official package's shell, profile-menu and native usage query contracts, with isolated runtime tests.
