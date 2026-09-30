@@ -1,5 +1,12 @@
 # Cambios
 
+## Codex 26.928.2636 and wallpaper persistence
+
+- Validate the new official package's shell and usage-query markers, and add 26.928.2636.0 to the preview list.
+- Back up wallpaper selection and appearance settings in the local data folder's `preferences.json`, rather than relying exclusively on Electron browser storage.
+- Restore the newest settings on startup, migrate existing selections, and checkpoint changes during the listener's two-second cycle. Imported media remain in the local library.
+- Add regressions for stale backup writes and restoration into a fresh browser storage partition. Live restart verification is recorded separately in TESTING.md.
+
 ## Console-free OBS startup
 
 - Compile a local WinExe launcher that starts Node with `CreateNoWindow`, redirects logs to files and prevents duplicate instances with a mutex.

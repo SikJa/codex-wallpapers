@@ -1,5 +1,9 @@
 # Verificación
 
+## Codex 26.928.2636.0 and disk preferences
+
+The official package retains the main shell and native profile and rate-limit query contracts. Isolated tests recover the selected media in a fresh browser context with empty localStorage, using `preferences.json` in the local library folder. Unit tests prevent an older window checkpoint from overwriting newer settings and cover a malformed backup. Existing browser preferences migrate on startup; the listener checkpoints changes every two seconds. Live restart verification is pending at preparation time.
+
 ## Codex 26.928.1915.0
 
 The installed official ASAR retains `main[data-app-shell-main-surface]`, the profile footer labels and the native `rate-limit-status` query (both one-part polling and account-scoped SSE keys). Image-generation queries share that prefix and may also contain rate limits; the regression test now supplies such a payload with a newer timestamp to verify it cannot replace account usage.

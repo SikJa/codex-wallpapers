@@ -53,5 +53,11 @@ try{
  const hidden=await context.newPage();await hidden.goto(url);await hidden.evaluate(()=>Object.defineProperty(document,'hidden',{configurable:true,get:()=>true}));await applyWindow({evaluate:x=>hidden.evaluate(x)},library,data,code);assert.equal((await hidden.evaluate(()=>window.__CODEX_WALLPAPERS_PUBLIC__.status())).media,false);await hidden.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>false});document.dispatchEvent(new Event('visibilitychange'));});await applyWindow({evaluate:x=>hidden.evaluate(x)},library,data,code);assert.equal((await hidden.evaluate(()=>window.__CODEX_WALLPAPERS_PUBLIC__.status())).media,true);await hidden.close();results.push('Hidden window defers wallpaper payload until visible');
  await page.setViewportSize({width:620,height:820});await page.locator('#profile').click();await page.locator('[data-cw-menu]').click();const overflow=await page.locator('dialog').evaluate(e=>e.scrollWidth>e.clientWidth+1);assert.equal(overflow,false);await page.screenshot({path:path.join(out,'narrow-library.png')});await page.keyboard.press('Escape');
  await page.evaluate(()=>window.__CODEX_WALLPAPERS_PUBLIC__.dispose());assert.equal(await page.locator('#cw-media').count(),0);assert.equal(await page.locator('[data-cw-menu]').count(),0);assert.equal(await page.locator('html').evaluate(e=>e.classList.contains('cw-active')),false);results.push('Narrow modal; cleanup restores native surfaces');
+ // A brand-new storage partition must recover the last selection from disk.
+ const clean=await browser.newContext();const restarted=await clean.newPage();await restarted.goto(url);
+ await applyWindow({evaluate:x=>restarted.evaluate(x)},await readLibrary(data),data,code);
+ assert.equal((await restarted.evaluate(()=>window.__CODEX_WALLPAPERS_PUBLIC__.status())).selected,image.id);
+ assert.equal(await restarted.locator('#cw-media').count(),1);
+ await clean.close();results.push('Disk backup restores wallpaper after browser storage is lost');
  console.log(JSON.stringify({passed:results},null,2));await fs.writeFile(path.join(out,'ui-results.json'),JSON.stringify(results,null,2));
 }finally{await browser?.close();await new Promise(r=>server.close(r));}

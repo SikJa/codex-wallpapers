@@ -8,8 +8,9 @@
     "26.924.1866.0",
     "26.924.2738.0",
     "26.924.6891.0",
-    "26.928.1915.0"
+    "26.928.1915.0",
+    "26.928.2636.0"
   ],
   "status": "preview",
-  "note": "Preview. Codex 26.928.1915.0: isolated runtime tests pass, live personalization confirmed after an authorized restart, and native usage verified in the transparent OBS browser source. Clean-install validation remains pending. See docs/TESTING.md."
+  "note": "Preview. Codex 26.928.2636.0 official shell and native query contracts inspected. Isolated tests and live restart verification are recorded in docs/TESTING.md; clean-install validation remains pending."
 }

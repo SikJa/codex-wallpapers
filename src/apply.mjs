@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { Worker } from 'node:worker_threads';
 import { dataRoot, readLibrary, safePath, atomicJSON } from './library.mjs';
 import { Session, targets } from './cdp.mjs';
+import {readPreferences,persistPreferences} from './preferences.mjs';
 const exec=promisify(execFile),root=dataRoot();
 const ownFile=fileURLToPath(import.meta.url),repo=path.dirname(path.dirname(ownFile));
 const read=p=>fs.readFile(path.join(repo,p),'utf8');
@@ -47,6 +48,8 @@ async function transferWindow(session, library, base, code){
   const exists=await session.evaluate('!!window.__CODEX_WALLPAPERS_PUBLIC__');
   if(!exists){
     await session.evaluate(code);
+    const saved=await readPreferences(base);
+    if(saved)await session.evaluate(`window.__CODEX_WALLPAPERS_PUBLIC__.restorePreferences(${JSON.stringify(saved)})`);
     await session.evaluate('window.__CW_INSTALL_GUARD__=setTimeout(()=>window.__CODEX_WALLPAPERS_PUBLIC__?.dispose(),60000)');
   }
   try {
@@ -60,6 +63,7 @@ async function transferWindow(session, library, base, code){
     await session.evaluate('window.__CODEX_WALLPAPERS_PUBLIC__.ready()');
     await transferRequested(session,library,base);
     const status=await session.evaluate('window.__CODEX_WALLPAPERS_PUBLIC__.status()');
+    await persistPreferences(base,await session.evaluate('window.__CODEX_WALLPAPERS_PUBLIC__.preferencesSnapshot()'));
     await session.evaluate('clearTimeout(window.__CW_INSTALL_GUARD__);delete window.__CW_INSTALL_GUARD__');
     return status;
   } catch(e){
@@ -115,6 +119,7 @@ async function run(){
           }else{
             await transferRequested(s,library,root);
             status=await s.evaluate('window.__CODEX_WALLPAPERS_PUBLIC__.status()');
+            await persistPreferences(root,await s.evaluate('window.__CODEX_WALLPAPERS_PUBLIC__.preferencesSnapshot()'));
           }
           const state=seen.get(t.id);
           if(usageSnapshot&&state?.usageGeneratedAt!==usageSnapshot.generatedAt){
