@@ -13,6 +13,7 @@ html.cw-active [data-composer-surface-variant]:not([data-composer-utility-bar-va
 html.cw-active [data-composer-surface-variant] {box-shadow:none!important;}
 html.cw-active .group\/home-suggestions button {background:color-mix(in srgb,var(--cw-surface) var(--cw-card-opacity),transparent)!important;backdrop-filter:blur(8px);border-radius:14px!important;}
 html.cw-active main[data-app-shell-main-surface] [aria-hidden="true"].pointer-events-none.bg-gradient-to-t.from-surface,html.cw-active .thread-scroll-container .bg-gradient-to-t.from-token-main-surface-primary {background:transparent!important;}
+html.cw-active [data-thread-scroll-footer],html.cw-active [data-thread-scroll-footer] > .pointer-events-none.absolute.inset-x-0.bg-surface {background:transparent!important;}
 html.cw-active main[data-app-shell-main-surface] [class~="electron:bg-surface"][class~="windows:rounded-tl-lg"] {background:#000!important;border-radius:var(--cw-settings-radius)!important;overflow:hidden!important;}
 html.cw-active:has(main[data-app-shell-main-surface] [class~="electron:bg-surface"][class~="windows:rounded-tl-lg"]) [data-app-shell-main-content-top-fade] {background:transparent!important;}
 html.cw-active div[class*="ApplicationMenuTopBar"],html.cw-active header.flex.h-toolbar.w-full.draggable {background:color-mix(in srgb,var(--cw-surface) 12%,transparent)!important;border-color:transparent!important;backdrop-filter:none!important;}

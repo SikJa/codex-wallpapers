@@ -1,5 +1,10 @@
 # Cambios
 
+## Composer footer surface
+
+- Make the current native thread footer's solid backdrop transparent while wallpaper mode is enabled. The rounded composer keeps its own surface; only the wide layer underneath is cleared.
+- Add an isolated regression for the new footer markup. Composer effects remain outside the distributed runtime.
+
 ## Codex 26.928.2636 and wallpaper persistence
 
 - Validate the new official package's shell and usage-query markers, and add 26.928.2636.0 to the preview list.
