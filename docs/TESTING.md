@@ -41,6 +41,10 @@ Se generan PNG/video sintéticos en `test-results`, se importan con el código r
 
 ## Windows
 
+`node tests/dots.mjs` checks the embedded Dots conversation and computer-panel surfaces, preserves message bubbles and desktop contents, and verifies the native dot shortcut: click delegation, no duplicate buttons, remount, renamed dots, missing dots and cleanup. It uses the same Playwright/browser environment variables as `tests/ui.mjs`.
+
+On 2026-10-01, Codex 26.928.3736.0 was restarted once through the existing personalized launcher. The selected video, native usage indicator and Dots rail shortcut restored automatically in both open documents. Live inspection confirmed transparent embedded conversation and computer-panel backgrounds; the shortcut opened the native dot view. A private screenshot confirmed the wallpaper across both panes and no solid composer-footer strip. No account names, avatar assets, conversations or screenshots from that session are distributed. A clean installation on another PC remains unverified.
+
 `windows/install.ps1 -Check` verifica paquete oficial, Node, compilador e icono. El instalador acepta `-InstallRoot <carpeta-de-prueba>\app -ShortcutRoot <carpeta-de-prueba>\shortcuts` para compilar y comprobar un acceso sin colocarlo en Inicio. No ejecutar ese acceso si no se quiere abrir Codex.
 
 ## Prueba manual de una versión candidata

@@ -1,0 +1,16 @@
+import fs from 'node:fs/promises';import {pathToFileURL}from'node:url';import assert from'node:assert/strict';
+const {chromium}=process.env.PLAYWRIGHT_MODULE?await import(pathToFileURL(process.env.PLAYWRIGHT_MODULE)):await import('playwright');
+const browser=await chromium.launch({headless:true,...(process.env.CW_TEST_BROWSER?{executablePath:process.env.CW_TEST_BROWSER}:{})});
+try{const page=await browser.newPage();await page.setContent(`<html class="cw-active"><body><nav data-app-navigation-rail="true"><div><div><button data-sidebar-destination="builtin:home">Home</button></div></div></nav><aside><button data-sidebar-destination="builtin:orbit"><svg viewBox="0 0 20 20"></svg><span class="text-fade-truncate">Test dot</span></button></aside><div class="messaging-root messaging-embedded" style="background:#000"><div class="workspace"><main class="thread-pane" style="background:#000"><div class="message-bubble" style="background:rgb(20,20,20)">Message</div></main></div></div><div data-app-shell-compact-page-gutter style="background:#000"><div class="p-[var(--right-panel-composer-overlay-fit-reserve,0px)]" style="background:#000"><div id="remote-content" style="background:#000">Desktop</div></div></div><div id="settings" style="background:#000">Settings</div></body></html>`);
+await page.addStyleTag({content:await fs.readFile('src/appearance.css','utf8')});await page.evaluate(()=>{window.clicked=0;document.querySelector('aside button').onclick=()=>window.clicked++});
+await page.addScriptTag({content:await fs.readFile('src/dot-shortcut.js','utf8')});
+const clear=async selector=>assert.equal(await page.locator(selector).evaluate(e=>getComputedStyle(e).backgroundColor),'rgba(0, 0, 0, 0)');
+await clear('.messaging-embedded');await clear('.thread-pane');await clear('[data-app-shell-compact-page-gutter]');await clear('[class^="p-[var"]');
+assert.equal(await page.locator('.message-bubble').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(20, 20, 20)');for(const id of['remote-content','settings'])assert.equal(await page.locator('#'+id).evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(0, 0, 0)');
+await page.locator('[data-cw-dot-shortcut]').click();assert.equal(await page.evaluate(()=>window.clicked),1);assert.equal(await page.locator('[data-cw-dot-shortcut]').getAttribute('data-sidebar-destination'),null);
+await page.addScriptTag({content:await fs.readFile('src/dot-shortcut.js','utf8')});assert.equal(await page.locator('[data-cw-dot-shortcut]').count(),1);
+await page.evaluate(()=>document.querySelector('[data-cw-dot-shortcut]').remove());await page.locator('[data-cw-dot-shortcut]').waitFor();assert.equal(await page.locator('[data-cw-dot-shortcut]').count(),1);
+await page.evaluate(()=>document.querySelector('aside button span').textContent='Renamed');await page.waitForTimeout(300);assert.equal(await page.locator('[data-cw-dot-shortcut]').getAttribute('aria-label'),'Open Renamed');
+await page.evaluate(()=>document.querySelector('aside button').remove());await page.waitForTimeout(300);assert.equal(await page.locator('[data-cw-dot-shortcut]').count(),0);
+await page.evaluate(()=>window.__CW_DOT_SHORTCUT__.dispose());console.log('Dots: transparent surfaces; bubbles/desktop/settings preserved; native click; unique shortcut; remount; rename; missing dot; cleanup passed');
+}finally{await browser.close()}

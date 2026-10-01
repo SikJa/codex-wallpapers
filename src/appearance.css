@@ -18,3 +18,10 @@ html.cw-active main[data-app-shell-main-surface] [class~="electron:bg-surface"][
 html.cw-active:has(main[data-app-shell-main-surface] [class~="electron:bg-surface"][class~="windows:rounded-tl-lg"]) [data-app-shell-main-content-top-fade] {background:transparent!important;}
 html.cw-active div[class*="ApplicationMenuTopBar"],html.cw-active header.flex.h-toolbar.w-full.draggable {background:color-mix(in srgb,var(--cw-surface) 12%,transparent)!important;border-color:transparent!important;backdrop-filter:none!important;}
 html.cw-active header[class*="ApplicationMenuPageHeader"] {background:color-mix(in srgb,var(--cw-surface) 18%,transparent)!important;border-color:transparent!important;backdrop-filter:none!important;}
+/* Dots uses embedded messaging and its own computer panel instead of thread surfaces. */
+html.cw-active .messaging-root.messaging-embedded,
+html.cw-active .messaging-root.messaging-embedded > .workspace > .thread-pane,
+html.cw-active [data-app-shell-compact-page-gutter]:has([class~="p-[var(--right-panel-composer-overlay-fit-reserve,0px)]"]),
+html.cw-active [class~="p-[var(--right-panel-composer-overlay-fit-reserve,0px)]"] {background:transparent!important;}
+[data-cw-dot-shortcut] {width:36px;height:36px;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+[data-cw-dot-shortcut] > :is([data-codex-pet-id],svg,img) {width:22px;height:22px;flex-shrink:0;object-fit:contain;}

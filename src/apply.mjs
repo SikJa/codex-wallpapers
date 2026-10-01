@@ -13,7 +13,7 @@ const ownFile=fileURLToPath(import.meta.url),repo=path.dirname(path.dirname(ownF
 const read=p=>fs.readFile(path.join(repo,p),'utf8');
 export async function payload(){
   const [appearanceCSS,modalCSS,panelCSS,panelJS]=await Promise.all(['src/appearance.css','src/modal.css','src/usage-panel.bundle.css','src/usage-panel.bundle.js'].map(read));
-  return `${await read('src/runtime.js')}(${JSON.stringify({appearanceCSS,modalCSS})});\n${await read('src/usage.js')}();\ntry{(()=>{const style=document.createElement('style');style.id='cw-usage-panel-style';style.textContent=${JSON.stringify(panelCSS)};document.head.append(style);})();\n${panelJS}\n}catch(error){document.getElementById('cw-usage-panel-style')?.remove();console.warn('Codex Wallpapers usage preview unavailable:',error);}`;
+  return `${await read('src/runtime.js')}(${JSON.stringify({appearanceCSS,modalCSS})});\n${await read('src/dot-shortcut.js')}\n${await read('src/usage.js')}();\ntry{(()=>{const style=document.createElement('style');style.id='cw-usage-panel-style';style.textContent=${JSON.stringify(panelCSS)};document.head.append(style);})();\n${panelJS}\n}catch(error){document.getElementById('cw-usage-panel-style')?.remove();console.warn('Codex Wallpapers usage preview unavailable:',error);}`;
 }
 export async function applyWindow(session, library, base, code){
   const owner=crypto.randomUUID();

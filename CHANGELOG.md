@@ -1,5 +1,11 @@
 # Cambios
 
+## Dots surfaces and rail shortcut
+
+- Extend wallpaper transparency to the embedded Dots conversation and computer panel while preserving message bubbles and remote desktop contents.
+- Add a native-style dot shortcut to the navigation rail using the current dot's name/avatar and original navigation button. Remount without duplicates and remove it when no native dot entry exists.
+- Verify the surfaces and shortcut in isolation and after one controlled restart on Codex 26.928.3736.0. Preserve saved wallpaper selection and personal composer effects.
+
 ## Codex 26.928.3736
 
 - Add 26.928.3736.0 after inspecting the official shell, profile, footer and usage-query contracts.
