@@ -2,7 +2,7 @@
 
 ## Codex 26.928.3736.0
 
-The official package retains the main surface, profile-menu labels, thread footer and `rate-limit-status` query contracts. Isolated library, preference restore, UI, footer transparency and automatic usage-refresh suites pass. Live startup verification is pending at preparation time; the controlled restart runs outside Codex's process tree and checks restored media, disk selection, sidebar usage and OBS consistency.
+The official package retains the main surface, profile-menu labels, thread footer and `rate-limit-status` query contracts. Isolated library, preference restore, UI, footer transparency and automatic usage-refresh suites pass. A controlled restart outside Codex's process tree completed successfully: the saved 1920px video resumed playback, disk selection matched, the composer footer was transparent, and the sidebar and OBS returned the same native remaining percentage and reset timestamp. Personal liquid-metal effects also loaded in the local installation; those effects are not part of the distributed repository. Clean-install validation remains pending.
 
 ## Codex 26.928.2636.0 and disk preferences
 
