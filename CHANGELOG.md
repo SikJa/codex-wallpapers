@@ -1,5 +1,10 @@
 # Cambios
 
+## Codex 26.928.3736
+
+- Add 26.928.3736.0 after inspecting the official shell, profile, footer and usage-query contracts.
+- Preserve disk-backed wallpaper selection, transparent composer footer and native usage refresh. Isolated tests pass; live restart verification is tracked in TESTING.md.
+
 ## Composer footer surface
 
 - Make the current native thread footer's solid backdrop transparent while wallpaper mode is enabled. The rounded composer keeps its own surface; only the wide layer underneath is cleared.

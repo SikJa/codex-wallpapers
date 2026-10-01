@@ -1,5 +1,9 @@
 # Verificación
 
+## Codex 26.928.3736.0
+
+The official package retains the main surface, profile-menu labels, thread footer and `rate-limit-status` query contracts. Isolated library, preference restore, UI, footer transparency and automatic usage-refresh suites pass. Live startup verification is pending at preparation time; the controlled restart runs outside Codex's process tree and checks restored media, disk selection, sidebar usage and OBS consistency.
+
 ## Codex 26.928.2636.0 and disk preferences
 
 The official package retains the main shell and native profile and rate-limit query contracts. Isolated tests recover the selected media in a fresh browser context with empty localStorage, using `preferences.json` in the local library folder. Unit tests prevent an older window checkpoint from overwriting newer settings and cover a malformed backup. Existing browser preferences migrate on startup; the listener checkpoints changes every two seconds.

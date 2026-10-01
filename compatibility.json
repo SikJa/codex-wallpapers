@@ -9,8 +9,9 @@
     "26.924.2738.0",
     "26.924.6891.0",
     "26.928.1915.0",
-    "26.928.2636.0"
+    "26.928.2636.0",
+    "26.928.3736.0"
   ],
   "status": "preview",
-  "note": "Preview. Codex 26.928.2636.0 official shell and native query contracts inspected. Isolated tests and live restart verification are recorded in docs/TESTING.md; clean-install validation remains pending."
+  "note": "Preview. Codex 26.928.3736.0 retains the official shell, footer and native usage-query contracts; isolated runtime tests pass. See TESTING.md for live verification and remaining clean-install coverage."
 }
