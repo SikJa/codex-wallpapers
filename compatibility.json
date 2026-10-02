@@ -11,8 +11,9 @@
     "26.928.1915.0",
     "26.928.2636.0",
     "26.928.3736.0",
-    "26.928.4866.0"
+    "26.928.4866.0",
+    "26.930.2377.0"
   ],
   "status": "preview",
-  "note": "Preview. Codex 26.928.4866.0 retains the inspected shell, Dots, footer and native usage-query contracts. See TESTING.md for isolated tests, live verification and remaining clean-install coverage."
+  "note": "Preview. Codex 26.930.2377.0 passed static inspection, isolated tests and one authorized startup on the existing installation. Saved video, appearance, metal effects, sidebar usage and OBS usage were restored. Clean-install validation on another PC remains pending. See docs/TESTING.md."
 }

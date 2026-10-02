@@ -20,6 +20,12 @@ The installed official ASAR retains `main[data-app-shell-main-surface]`, the pro
 
 After an authorized restart, the user confirmed the live personalization. The local OBS source was then checked in isolated Chrome at its configured canvas size: it rendered the native remaining percentage, animated orb and reset countdown with a transparent canvas. The server runs as a limited interactive scheduled task, independent of Codex's process tree. This verifies the browser source; final composition inside OBS and clean-install validation remain separate checks.
 
+## Codex 26.930.2377.0
+
+On 2026-10-02, static inspection of the installed official ASAR confirmed the main shell marker, native profile label, thread footer and rate-limit query markers. The launcher log showed `opened-normal` because the new version was absent from the compatibility list. This version is now enabled after seven unit tests and the isolated wallpaper UI, usage and Dots suites passed. These checks cover saved wallpaper recovery, transparent composer footer, sidebar integration and usage refresh.
+
+After explicit authorization, an independent limited Windows task closed and opened Codex once through the existing personalized launcher, guarded by a one-use lock. The new endpoint's package and browser identity were verified. Live inspection confirmed that the saved video was playing, the disk selection matched the renderer, metal effects were installed, the composer footer was transparent, the sidebar usage trigger and local metrics were available, and the OBS state matched the native remaining percentage. The user confirmed that personalization applied. Clean-install validation on another PC and a new active Dot call remain separate checks; this restart did not test the global microphone shortcut during a call.
+
 ## Automatizada
 
 ```powershell
