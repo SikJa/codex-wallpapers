@@ -1,5 +1,9 @@
 # Verificación
 
+## Codex 26.928.4866.0
+
+Read-only inspection of the official package confirms the existing shell, embedded Dots surfaces, native footer, sidebar destination and account `rate-limit-status` query contracts. The isolated library/preferences suites, UI restoration across windows and empty browser storage, Dots transparency/shortcut checks, automatic usage-refresh checks and source/documentation checks pass. An authorized one-use scheduled task restarted Codex independently of its process tree. Live verification confirmed the saved 1920px video playing, disk selection restored, transparent composer footer, local metal effects, and matching sidebar/OBS native remaining percentage and reset timestamp. Clean-install coverage and the local activity scan remain separate from these checks. The personal Dot microphone hotkey is outside this repository's scope and its real-call verification is pending.
+
 ## Codex 26.928.3736.0
 
 The official package retains the main surface, profile-menu labels, thread footer and `rate-limit-status` query contracts. Isolated library, preference restore, UI, footer transparency and automatic usage-refresh suites pass. A controlled restart outside Codex's process tree completed successfully: the saved 1920px video resumed playback, disk selection matched, the composer footer was transparent, and the sidebar and OBS returned the same native remaining percentage and reset timestamp. Personal liquid-metal effects also loaded in the local installation; those effects are not part of the distributed repository. Clean-install validation remains pending.
