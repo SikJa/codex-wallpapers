@@ -12,8 +12,9 @@
     "26.928.2636.0",
     "26.928.3736.0",
     "26.928.4866.0",
-    "26.930.2377.0"
+    "26.930.2377.0",
+    "26.930.3930.0"
   ],
   "status": "preview",
-  "note": "Preview. Codex 26.930.2377.0 passed static inspection, isolated tests and one authorized startup on the existing installation. Saved video, appearance, metal effects, sidebar usage and OBS usage were restored. Clean-install validation on another PC remains pending. See docs/TESTING.md."
+  "note": "Preview. Codex 26.930.3930.0 passed static inspection, isolated tests and one authorized startup on the existing installation. Saved wallpaper, metal effects, transparent footer, local metrics and native/OBS usage were verified. Clean-install validation on another PC remains pending. See docs/TESTING.md."
 }

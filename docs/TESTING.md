@@ -20,6 +20,12 @@ The installed official ASAR retains `main[data-app-shell-main-surface]`, the pro
 
 After an authorized restart, the user confirmed the live personalization. The local OBS source was then checked in isolated Chrome at its configured canvas size: it rendered the native remaining percentage, animated orb and reset countdown with a transparent canvas. The server runs as a limited interactive scheduled task, independent of Codex's process tree. This verifies the browser source; final composition inside OBS and clean-install validation remain separate checks.
 
+## Codex 26.930.3930.0
+
+On 2026-10-03, static inspection of the installed official ASAR confirmed the shell, profile, thread footer, native usage and microphone-state markers. Codex was running without local debugging, and the previous endpoint belonged to the older version; the OBS server correctly returned unavailable usage rather than a stale percentage. Unit, wallpaper UI, native usage and Dots tests passed in isolation.
+
+After explicit authorization, an independent limited Windows task closed and opened Codex once through the existing personalized launcher, with a one-use lock. Live verification confirmed the official endpoint identity, restored saved wallpaper and settings, matching disk selection, metal effects, transparent composer footer, sidebar usage trigger and local history. Native usage and the local OBS server returned the same remaining percentage and reset timestamp. The local camera composition passed isolated browser checks for real usage, transparency, automatic motion and no clipping at 1920 by 1080 and 336 by 467. This checks the browser source, not final placement in the active OBS scene. Camera-composition assets remain local, and clean-install validation and an active Dot microphone call remain unverified.
+
 ## Codex 26.930.2377.0
 
 On 2026-10-02, static inspection of the installed official ASAR confirmed the main shell marker, native profile label, thread footer and rate-limit query markers. The launcher log showed `opened-normal` because the new version was absent from the compatibility list. This version is now enabled after seven unit tests and the isolated wallpaper UI, usage and Dots suites passed. These checks cover saved wallpaper recovery, transparent composer footer, sidebar integration and usage refresh.
