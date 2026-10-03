@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import readline from 'node:readline';
 
-const MAX_FILE_BYTES=256*1024*1024;
+const MAX_FILE_BYTES=1024*1024*1024;
 const localDay=value=>{
   const date=new Date(value);
   if(!Number.isFinite(date.getTime()))return null;
@@ -19,6 +19,9 @@ async function sessionAggregate(file){
   const lines=readline.createInterface({input:fs.createReadStream(file,{encoding:'utf8'}),crlfDelay:Infinity});
   try{
     for await(const line of lines){
+      // Large tool outputs and messages carry no counters. Do not parse their JSON.
+      if(!line.includes('"type":"token_count"')&&!line.includes('"type":"task_started"')&&!line.includes('"type":"task_complete"')&&
+         !/"type"\s*:\s*"(?:token_count|task_started|task_complete)"/.test(line))continue;
       let event;try{event=JSON.parse(line);}catch{continue;}
       if(event?.type!=='event_msg')continue;
       const payload=event.payload||{};

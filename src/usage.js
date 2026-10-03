@@ -112,7 +112,8 @@
     } catch { /* Native query unavailable after an app update: keep the app usable. */ }
     finally { pending = false; render(); }
   }
-  const observer = new MutationObserver(render);
+  let renderTimer = null;
+  const observer = new MutationObserver(() => { if (renderTimer === null) renderTimer = setTimeout(() => { renderTimer = null; render(); }, 250); });
   observer.observe(document.documentElement, {childList: true, subtree: true, attributes: true, attributeFilter: ['aria-label', 'lang']});
   const timer = setInterval(refresh, 30000);
   document.addEventListener('visibilitychange', refresh);
@@ -122,7 +123,7 @@
     refresh,
     getSnapshot:nativeSnapshot,
     dispose() {
-      disposed = true; clearInterval(timer); observer.disconnect(); unsubscribe?.();
+      disposed = true; clearInterval(timer); clearTimeout(renderTimer); observer.disconnect(); unsubscribe?.();
       document.removeEventListener('visibilitychange', refresh); window.removeEventListener('focus', refresh);
       document.querySelectorAll('[data-cw-usage]').forEach(el => el.remove()); style.remove();
       if (window.__CW_USAGE__ === api) delete window.__CW_USAGE__;
@@ -132,3 +133,4 @@
   refresh();
   return api;
 })
+

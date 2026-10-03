@@ -35,7 +35,8 @@ try{
   await page.waitForSelector('.cwp-panel');
   assert.equal(await page.evaluate(()=>window.usageClicked===true),false);
   const current=new Date(),today=`${current.getFullYear()}-${String(current.getMonth()+1).padStart(2,'0')}-${String(current.getDate()).padStart(2,'0')}`;
-  await page.evaluate(day=>window.__CW_USAGE_PANEL__.setSnapshot({source:'local-session-logs',generatedAt:new Date().toISOString(),coverage:{sessions:2,firstDay:day,lastDay:day,skippedFiles:0},totalTokens:12345,maxSessionTokens:10000,longestTaskSeconds:3600,currentStreakDays:1,longestStreakDays:3,dailyTokens:{[day]:12345}}),today);
+  await page.evaluate(day=>window.__CW_USAGE_PANEL__.setSnapshot({source:'official-account-usage',generatedAt:new Date().toISOString(),coverage:{sessions:2,firstDay:day,lastDay:day,skippedFiles:0},totalTokens:12345,peakDailyTokens:10000,longestTaskSeconds:3600,currentStreakDays:1,longestStreakDays:3,dailyTokens:{[day]:12345}}),today);
+  await page.waitForFunction(()=>document.querySelector('.cwp-stats')?.textContent.includes('12.3K'));
   assert.equal(await page.locator('.cwp-profile h2').textContent(),'Test User');
   assert.equal(await page.locator('.cwp-plan').textContent(),'Pro');
   assert.match(await page.locator('.cwp-stats').textContent(),/12\.3K/);
@@ -56,5 +57,5 @@ try{
   await page.waitForFunction(()=>window.usageClicked===true);
   await page.evaluate(()=>window.__CW_USAGE_PANEL__.dispose());
   assert.equal(await page.locator('.cwp-trigger').count(),0);
-  console.log('PASS: per-user native identity, local snapshot, avatar picker, activity cells, native Usage link and cleanup.');
+  console.log('PASS: native identity, synthetic account snapshot, avatar picker, activity cells, native Usage link and cleanup.');
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve))}

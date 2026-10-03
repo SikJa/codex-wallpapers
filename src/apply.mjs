@@ -88,7 +88,7 @@ async function run(){
   const seen=new Map(),code=await payload();let failures=0,first=true;
   let usageSnapshot=null,scanStartedAt=0,scan=false,workerAlive=true;
   const worker=new Worker(new URL('./usage-worker.mjs',import.meta.url));worker.unref();
-  worker.on('message',message=>{scan=false;if(message.snapshot)usageSnapshot=message.snapshot;else if(message.error)console.warn('Local usage scan unavailable:',message.error)});
+  worker.on('message',message=>{scan=false;usageSnapshot=message.snapshot||{source:'official-account-usage',generatedAt:new Date().toISOString(),unavailable:true};if(message.error)console.warn('Official account usage unavailable:',message.error)});
   worker.on('error',error=>{workerAlive=false;scan=false;console.warn('Local usage worker unavailable:',error.message)});
   worker.on('exit',()=>{workerAlive=false;scan=false});
   const refreshUsage=()=>{

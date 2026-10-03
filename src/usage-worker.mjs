@@ -1,9 +1,8 @@
 import {parentPort} from 'node:worker_threads';
-import {LocalUsageIndex} from './usage-local.mjs';
+import {readAccountUsage} from './usage-account.mjs';
 
-const index=new LocalUsageIndex();
 parentPort.on('message',async message=>{
   if(message!=='refresh')return;
-  try{parentPort.postMessage({snapshot:await index.refresh()});}
-  catch(error){parentPort.postMessage({error:error.message});}
+  try{parentPort.postMessage({snapshot:await readAccountUsage()});}
+  catch(error){parentPort.postMessage({snapshot:null,error:error.message});}
 });

@@ -85,4 +85,5 @@ En Codex oficial 26.924.2738.0 se confirmó que la versión no admitida abría C
 
 `tests/usage.mjs` usa una consulta nativa simulada y reloj controlado para verificar suscripciones, refresco cada 30 segundos, pausa en segundo plano, expiracion de datos, idioma y limpieza. No accede a ninguna cuenta.
 
-`tests/usage-local.test.mjs` usa sesiones sintéticas para comprobar deltas de tokens, rachas, duración, actualización de archivos y descarte de archivos eliminados. `tests/usage-panel.mjs` monta el panel en Chrome aislado para comprobar nombre/plan nativos, foto elegida con `+`, métricas locales, celdas interactivas, enlace a Uso y limpieza. Ninguna de estas pruebas lee la cuenta ni las sesiones reales del usuario. [Alcance de los datos](USAGE.md).
+`tests/usage-local.test.mjs` usa sesiones sintéticas para comprobar deltas de tokens, rachas, duración, actualización de archivos y descarte de archivos eliminados. `tests/usage-panel.mjs` monta el panel en Chrome aislado para comprobar nombre/plan nativos, foto elegida con `+`, respuesta de cuenta sintética, celdas interactivas, enlace a Uso y limpieza. Ninguna de estas pruebas lee la cuenta ni las sesiones reales del usuario. [Alcance de los datos](USAGE.md).
+

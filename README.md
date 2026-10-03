@@ -30,7 +30,7 @@ The gallery is a showcase, not a bundled collection. [Wallpaper credits](docs/as
 - **Your colors:** automatic palettes or manual colors, with adjustable opacity and corners.
 - **Your layout:** fit without stretching, saved preferences and support for additional windows.
 - **Bounded renderer memory:** each window receives the catalog thumbnails and only its currently selected full-size wallpaper. Hidden windows defer animated media.
-- **Usage preview:** click the compact sidebar indicator to open the local activity view; only the link inside opens native Usage. The native remaining limit and reset time stay separate from token history calculated from this computer's sessions. Add your own profile photo with `+`. [Which values are real?](docs/USAGE.md)
+- **Usage preview:** click the sidebar indicator for official account tokens, peak day, longest task, streaks and daily history. Quota remaining and reset use the native query. Add a private local photo with `+`. [Data sources](docs/USAGE.md).
 - **OBS usage overlay:** show the animated orb, live percentage and next-reset countdown below your camera. [Setup](docs/OBS_USAGE_OVERLAY.md).
 
 ## Get started

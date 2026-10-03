@@ -3,8 +3,6 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import {Worker} from 'node:worker_threads';
-import {once} from 'node:events';
 import {LocalUsageIndex} from '../src/usage-local.mjs';
 
 test('aggregates only local counters, handles resets and updates changed sessions',async()=>{
@@ -19,8 +17,6 @@ test('aggregates only local counters, handles resets and updates changed session
     const first=await index.refresh();
     assert.equal(first.totalTokens,170);assert.equal(first.maxSessionTokens,150);assert.equal(first.longestTaskSeconds,300);assert.equal(first.coverage.sessions,1);
     assert.equal(JSON.stringify(first).includes('SECRET'),false);assert.equal(JSON.stringify(first).includes(file),false);
-    const worker=new Worker(new URL('../src/usage-worker.mjs',import.meta.url),{env:{...process.env,CODEX_HOME:root}});
-    try{const reply=once(worker,'message');worker.postMessage('refresh');assert.equal((await reply)[0].snapshot.totalTokens,170);}finally{await worker.terminate();}
     await fs.appendFile(file,count('2026-09-20T10:06:00Z',30));
     const second=await index.refresh();assert.equal(second.totalTokens,180);
     await fs.rm(file);const third=await index.refresh();assert.equal(third.totalTokens,0);assert.equal(third.coverage.sessions,0);

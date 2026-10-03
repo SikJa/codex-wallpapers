@@ -19,5 +19,3 @@ The reader refreshes every five minutes. Server reporting may lag; a successful 
 Quota remaining and the reset date continue to use the native `rate-limit-status` query, with their own freshness checks. An avatar selected manually is stored only on that computer.
 
 The account method is experimental and compatibility can change with Codex updates. The old `usage-local.mjs` remains an isolated log-analysis utility; it no longer supplies the preview.
-
-Account name and plan come from the native profile menu and rate-limit query. Missing identity is shown as unavailable; the author's identity is never substituted.
