@@ -63,5 +63,9 @@ try{
  assert.equal((await restarted.evaluate(()=>window.__CODEX_WALLPAPERS_PUBLIC__.status())).selected,image.id);
  assert.equal(await restarted.locator('#cw-media').count(),1);
  await clean.close();results.push('Disk backup restores wallpaper after browser storage is lost');
+ // A failed first transfer must not erase the selection saved for next startup.
+ const startup=await browser.newContext();const blank=await startup.newPage();await blank.goto(url);await blank.evaluate(code);
+ const retained=await blank.evaluate(()=>{const api=window.__CODEX_WALLPAPERS_PUBLIC__,id='bbbbbbbbbbbbbbbbbbbbbbbb';api.catalog({id,title:'Saved but unreadable',kind:'image',mime:'image/png',size:6,width:2,height:2,palette:{}},'');return api.select(id).then(()=>{api.takeRequests();api.reject(id,'Read failed');return api.preferencesSnapshot().settings.selected===id&&!api.status().media;});});
+ assert.equal(retained,true);await startup.close();results.push('Failed startup transfer preserves saved selection without an active wallpaper');
  console.log(JSON.stringify({passed:results},null,2));await fs.writeFile(path.join(out,'ui-results.json'),JSON.stringify(results,null,2));
 }finally{await browser?.close();await new Promise(r=>server.close(r));}

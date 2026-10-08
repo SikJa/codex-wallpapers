@@ -84,7 +84,7 @@
     if(prefs.selected!==id||document.hidden){URL.revokeObjectURL(url);if(prefs.selected===id)requests.add(id);return false;}
     return activate(id,url,{persist:false});
   }
-  function reject(id,message){accepting.delete(id);chunks.delete(id);if(prefs.selected===id){prefs.selected=current?.dataset.cwId||null;save();updateDetails();appearance();notice(`${message}. Your previous wallpaper is unchanged.`);}return false;}
+  function reject(id,message){accepting.delete(id);chunks.delete(id);if(prefs.selected===id){if(current){prefs.selected=current.dataset.cwId;save();}updateDetails();appearance();notice(`${message}. Your saved wallpaper selection is preserved.`);}return false;}
   const open=()=>{lastFocus=document.activeElement;if(!dialog.open)dialog.showModal();appearance();};
   const close=()=>dialog.close();q('close').onclick=close;dialog.addEventListener('close',()=>{if(lastFocus?.isConnected)lastFocus.focus();});
   q('help').onclick=q('empty-help').onclick=()=>{q('guide').hidden=!q('guide').hidden;};

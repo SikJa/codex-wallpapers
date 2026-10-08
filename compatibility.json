@@ -1,20 +1,21 @@
-{
-  "schema": 1,
-  "windowsPackages": [
-    "26.908.4834.0",
-    "26.908.9136.0",
-    "26.911.7940.0",
-    "26.917.8451.0",
-    "26.924.1866.0",
-    "26.924.2738.0",
-    "26.924.6891.0",
-    "26.928.1915.0",
-    "26.928.2636.0",
-    "26.928.3736.0",
-    "26.928.4866.0",
-    "26.930.2377.0",
-    "26.930.3930.0"
-  ],
-  "status": "preview",
-  "note": "Preview. Codex 26.930.3930.0 passed static inspection, isolated tests and one authorized startup on the existing installation. Saved wallpaper, metal effects, transparent footer, local metrics and native/OBS usage were verified. Clean-install validation on another PC remains pending. See docs/TESTING.md."
+﻿{
+    "schema":  1,
+    "windowsPackages":  [
+                            "26.908.4834.0",
+                            "26.908.9136.0",
+                            "26.911.7940.0",
+                            "26.917.8451.0",
+                            "26.924.1866.0",
+                            "26.924.2738.0",
+                            "26.924.6891.0",
+                            "26.928.1915.0",
+                            "26.928.2636.0",
+                            "26.928.3736.0",
+                            "26.928.4866.0",
+                            "26.930.2377.0",
+                            "26.930.3930.0",
+                            "26.1002.7124.0"
+                        ],
+    "status":  "preview",
+    "note":  "Preview. Codex 26.1002.7124.0 passed static inspection, isolated tests and one authorized startup on the existing installation. Saved wallpaper, metal, transparent footer, official account metrics and matching native/OBS quota were verified. The native update-button handoff passed isolated tests; a future real installer transition remains pending. Clean-install validation on another PC remains pending. See docs/TESTING.md."
 }

@@ -87,3 +87,8 @@ En Codex oficial 26.924.2738.0 se confirmó que la versión no admitida abría C
 
 `tests/usage-local.test.mjs` usa sesiones sintéticas para comprobar deltas de tokens, rachas, duración, actualización de archivos y descarte de archivos eliminados. `tests/usage-panel.mjs` monta el panel en Chrome aislado para comprobar nombre/plan nativos, foto elegida con `+`, respuesta de cuenta sintética, celdas interactivas, enlace a Uso y limpieza. Ninguna de estas pruebas lee la cuenta ni las sesiones reales del usuario. [Alcance de los datos](USAGE.md).
 
+
+## Codex 26.1002.7124.0 (2026-10-07)
+
+Static inspection confirmed the main-surface, profile-menu, footer, rate-limit query and account usage method markers. Source checks, twelve unit tests and the isolated usage panel passed. One authorized startup through the personalized taskbar shortcut verified the existing saved wallpaper, metal controls, transparent footer, sidebar orb, official account data and matching OBS quota/reset. Existing projects and assignments were preserved. This is verification on an existing installation; clean-install validation on another PC remains pending.
+

@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { Worker } from 'node:worker_threads';
 import { dataRoot, readLibrary, safePath, atomicJSON } from './library.mjs';
 import { Session, targets } from './cdp.mjs';
+import {attachUpdateBridge,installUpdateHook} from './update-bridge.mjs';
 import {readPreferences,persistPreferences} from './preferences.mjs';
 const exec=promisify(execFile),root=dataRoot();
 const ownFile=fileURLToPath(import.meta.url),repo=path.dirname(path.dirname(ownFile));
@@ -85,6 +86,7 @@ async function run(){
   await verifyOwner(endpoint);
   let lock;
   if(watch){try{lock=await fs.open(path.join(root,`watch-${endpoint.browserId}.lock`),'wx');}catch(e){if(e.code==='EEXIST'){console.log('Window listener already started for this browser.');return;}throw e;}}
+  const bridges=new Map();
   const seen=new Map(),code=await payload();let failures=0,first=true;
   let usageSnapshot=null,scanStartedAt=0,scan=false,workerAlive=true;
   const worker=new Worker(new URL('./usage-worker.mjs',import.meta.url));worker.unref();
@@ -104,12 +106,15 @@ async function run(){
       try{list=await targets(endpoint);failures=0;}catch(e){if(!watch||++failures>=3)throw e;await new Promise(r=>setTimeout(r,2000));continue;}
       const library=await readLibrary();
       const libraryGeneration=library.items.map(item=>`${item.id}:${item.sha256}`).join('|');
-      for(const id of seen.keys())if(!list.some(t=>t.id===id))seen.delete(id);
+      for(const id of seen.keys())if(!list.some(t=>t.id===id)){seen.delete(id);bridges.get(id)?.close();bridges.delete(id);}
       for(const t of list){
         const s=new Session(t.webSocketDebuggerUrl);try{
           await s.open();
           const probe=await s.evaluate('({main:!!document.querySelector("main[data-app-shell-main-surface]"),url:location.href,time:performance.timeOrigin,present:!!window.__CODEX_WALLPAPERS_PUBLIC__})');
           if(!probe.main)continue;
+          if(watch&&bridges.get(t.id)?.socket.readyState!==1){bridges.get(t.id)?.close();bridges.delete(t.id);}
+          if(watch&&!bridges.has(t.id)){const bridge=new Session(t.webSocketDebuggerUrl);await bridge.open();await attachUpdateBridge(bridge,{repo,root,version:endpoint.version});bridges.set(t.id,bridge);}
+          else if(watch){await bridges.get(t.id).evaluate(`(${installUpdateHook.toString()})()`);}
           const generation=String(probe.time);
           const previous=seen.get(t.id),needsInstall=!previous||previous.generation!==generation||previous.libraryGeneration!==libraryGeneration||!probe.present;
           let status;
@@ -133,6 +138,6 @@ async function run(){
       if(!watch&&first)throw Error('No ready Codex window. Open the personalized shortcut first.');
       if(watch)await new Promise(r=>setTimeout(r,2000));
     }while(watch);
-  } finally {await worker.terminate();if(lock){await lock.close();await fs.rm(path.join(root,`watch-${endpoint.browserId}.lock`),{force:true});}}
+  } finally {for(const bridge of bridges.values())bridge.close();await worker.terminate();if(lock){await lock.close();await fs.rm(path.join(root,`watch-${endpoint.browserId}.lock`),{force:true});}}
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===ownFile)run().catch(e=>{console.error(e.message);process.exitCode=1;});

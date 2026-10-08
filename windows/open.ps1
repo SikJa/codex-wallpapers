@@ -15,10 +15,20 @@ try {
  $record.version=$app.Version
  if((Get-CWProcesses $app).Count){Start-CWPackage $app;$record.state='already-open-activated';return}
  $node=Get-Command node.exe -ErrorAction SilentlyContinue
- $versions=(Get-Content (Join-Path $Repository 'compatibility.json') -Raw|ConvertFrom-Json).windowsPackages
  $port=Get-CWAvailablePort
  $record.port=$port
- $supported=$node -and ($versions -contains $app.Version) -and $null -ne $port
+ # Inspect the verified Store package at each cold opening, including versions
+ # installed by the official updater. Never download code or restart to retry.
+ $supported=$node -and $null -ne $port
+ if($supported){
+   try {
+     $probe=& $node.Source (Join-Path $Repository 'src/compatibility-probe.mjs') (Join-Path $app.Root 'app/resources/app.asar')
+     $probeExit=$LASTEXITCODE
+     $probe | Set-Content -LiteralPath (Join-Path $dataRoot 'compatibility-probe.json') -Encoding UTF8
+     $supported=$probeExit -eq 0 -and ($probe|ConvertFrom-Json).compatible
+     $record.compatibility='automatic-interface-probe'
+   }catch{$supported=$false;$record.compatibility='probe-failed'}
+ }
  if($supported){try{& $node.Source (Join-Path $Repository 'src/apply.mjs') --check 1> (Join-Path $dataRoot 'preflight.log') 2> (Join-Path $dataRoot 'preflight-error.log');$supported=$LASTEXITCODE -eq 0}catch{$supported=$false}}
  $record.launches=1
  if(-not $supported){Start-CWPackage $app;$record.state='opened-normal';return}
