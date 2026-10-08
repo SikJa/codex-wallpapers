@@ -1,5 +1,5 @@
 ﻿[CmdletBinding()]
-param([Parameter(Mandatory)][string]$Repository,[Parameter(Mandatory)][string]$DataRoot,[Parameter(Mandatory)][string]$PreviousVersion)
+param([Parameter(Mandatory)][string]$Repository,[Parameter(Mandatory)][string]$DataRoot,[Parameter(Mandatory)][string]$PreviousVersion,[string]$TaskName)
 $ErrorActionPreference='Stop'
 . "$PSScriptRoot/identity.ps1"
 $mutex=New-Object Threading.Mutex($false,'Local.CodexWallpapers.UpdateHandoff')
@@ -43,4 +43,4 @@ try {
  else{& "$PSScriptRoot/open.ps1" -Repository $Repository}
  $record.state='reopened-once'
 }catch{$record.state='failed';$record.error=$_.Exception.Message}
-finally{if($locked){$record.finished=(Get-Date).ToString('o');Save-Handoff;$mutex.ReleaseMutex()};$mutex.Dispose()}
+finally{if($locked){$record.finished=(Get-Date).ToString('o');Save-Handoff;$mutex.ReleaseMutex()};$mutex.Dispose();if($TaskName -match '^CodexWallpapers Update [0-9a-f-]{36}$'){Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue}}

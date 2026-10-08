@@ -92,3 +92,8 @@ En Codex oficial 26.924.2738.0 se confirmó que la versión no admitida abría C
 
 Static inspection confirmed the main-surface, profile-menu, footer, rate-limit query and account usage method markers. Source checks, twelve unit tests and the isolated usage panel passed. One authorized startup through the personalized taskbar shortcut verified the existing saved wallpaper, metal controls, transparent footer, sidebar orb, official account data and matching OBS quota/reset. Existing projects and assignments were preserved. This is verification on an existing installation; clean-install validation on another PC remains pending.
 
+
+
+## Native update-button handoff audit (2026-10-07)
+
+The installed updater exposes `lifecycleState.status`, not a string. The hook now matches that object plus the exact primary-action callback; dismiss and download buttons remain native. Thirteen unit tests passed. Private Windows fixtures verified one reopening after a simulated package transition, zero reopening after cancellation/timeout, and abort before handoff when the launcher is missing. A real on-demand Task Scheduler fixture completed after its spawning Node process exited. The initial detached-process approach failed that survival test and was replaced. No live official update was triggered by these fixtures. A complete future official installer transition is still pending; static markers do not guarantee visual compatibility or generate missing source adaptations.

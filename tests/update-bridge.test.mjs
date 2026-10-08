@@ -1,14 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {installUpdateHook} from '../src/update-bridge.mjs';
-function fixture(props){
+function fixture(status,{dismiss=false,alpha=false,bridge=true}={}){
  let listener,armed=0,restarts=0,blocked=0;
- global.window={cwArmUpdate:()=>armed++};
+ global.window=bridge?{cwArmUpdate:()=>armed++}:{};
  global.document={addEventListener:(_,fn)=>listener=fn};
- const button={__reactFiber$test:{memoizedProps:{...props,onRestart:()=>restarts++,onUpdate:()=>{}},return:null}};
- installUpdateHook();
- listener({target:{closest:()=>button},preventDefault:()=>blocked++,stopImmediatePropagation:()=>blocked++});
- return {armed,blocked,restart:()=>{window.__CW_UPDATE_RESUME__?.();return restarts;}};
+ const restart=()=>restarts++,update=()=>{},dismissFn=()=>{};
+ const action={status:'available',onClick:status==='readyToRestart'?restart:update,label:{props:{id:alpha?'sidebarElectron.internalAlphaUpdateBanner.cta':'sidebar.updateBanner.update'}}};
+ const fiber={memoizedProps:{onClick:dismiss?dismissFn:action.onClick},return:{memoizedProps:{primaryAction:action},return:alpha?null:{memoizedProps:{lifecycleState:{status},onRestart:restart,onUpdate:update},return:null}}};
+ const button={__reactFiber$test:fiber};installUpdateHook();
+ const click=()=>listener({target:{closest:()=>button},preventDefault:()=>blocked++,stopImmediatePropagation:()=>blocked++});click();
+ return {counts:()=>({armed,blocked,restarts}),click,resume:()=>window.__CW_UPDATE_RESUME__?.()};
 }
-test('native ready updater arms before restarting, once',()=>{const r=fixture({lifecycleState:'readyToRestart'});assert.equal(r.armed,1);assert.equal(r.blocked,2);assert.equal(r.restart(),1);assert.equal(r.restart(),1)});
-test('download and unrelated update actions are untouched',()=>{for(const state of ['available','downloading',undefined]){const r=fixture({lifecycleState:state});assert.equal(r.armed,0);assert.equal(r.blocked,0)}});
+test('real native object lifecycle arms before restart, deduplicates and resumes once',()=>{const r=fixture('readyToRestart');r.click();assert.deepEqual(r.counts(),{armed:1,blocked:4,restarts:0});r.resume();r.resume();assert.equal(r.counts().restarts,1)});
+test('download, installed, dismiss and missing bridge leave native action untouched',()=>{for(const [s,options] of [['available',{}],['downloading',{}],['installed',{}],['readyToRestart',{dismiss:true}],['readyToRestart',{bridge:false}]]){const r=fixture(s,options);assert.equal(r.counts().armed,0);assert.equal(r.counts().blocked,0)}});
+test('internal alpha exact primary action is recognized',()=>{const r=fixture('readyToRestart',{alpha:true});assert.equal(r.counts().armed,1);r.resume();assert.equal(r.counts().restarts,1)});
