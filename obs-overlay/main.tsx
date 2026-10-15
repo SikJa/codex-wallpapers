@@ -41,10 +41,10 @@ function Overlay(){
   const value=ready?String(usage.percent):'—'
   const accent=/^#[0-9a-f]{6}$/i.test(usage.accent)?usage.accent:fallback.accent
   const countdown=ready?resetCountdown(usage.resetAt,clock):null
-  return <main className={`overlay ${ready?'is-ready':'is-waiting'}`} style={{'--accent':accent} as React.CSSProperties} aria-label={ready?`Codex: ${usage.percent}% de uso restante`:'Uso de Codex no disponible'}>
+  return <main className={`overlay ${ready?'is-ready':'is-waiting'}`} style={{'--accent':accent} as React.CSSProperties} aria-label={ready?`Codex: ${usage.percent}% remaining`:'Codex usage unavailable'}>
     <div className="orb" aria-hidden="true"><ThinkingOrb state="composing" size={64} speed={1.2} theme="dark"/></div>
-    <div className="copy"><span className="eyebrow">CODEX <i/> USO RESTANTE</span><div className="value"><Digits value={value}/>{ready&&<span className="percent" aria-hidden="true">%</span>}</div><span className="reset">{countdown?`Se restablece en ${countdown}`:ready?'Reinicio no disponible':'Esperando datos de Codex'}</span></div>
-    <span className="sr-only">{ready?`${usage.percent}% restante${countdown?`, se restablece en ${countdown}`:''}`:'Esperando un dato actualizado de Codex'}</span>
+    <div className="copy"><span className="eyebrow">CODEX <i/> REMAINING USAGE</span><div className="value"><Digits value={value}/>{ready&&<span className="percent" aria-hidden="true">%</span>}</div><span className="reset">{countdown?`Resets in ${countdown}`:ready?'Reset unavailable':'Waiting for Codex usage'}</span></div>
+    <span className="sr-only">{ready?`${usage.percent}% remaining${countdown?`, resets in ${countdown}`:''}`:'Waiting for fresh Codex usage'}</span>
   </main>
 }
 

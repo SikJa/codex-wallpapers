@@ -31,3 +31,9 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\uninstall.ps1
 ```
 
 El desinstalador mueve su propia carpeta `app` y su acceso a una copia recuperable. No elimina medios ni conversaciones. Una ventana ya personalizada conserva sus capas hasta cerrarse normalmente; el desinstalador no la cierra.
+
+## Node y overlay tras mover Windows o el repositorio
+
+Los lanzadores ahora buscan Node en el PATH y, si no está, en el runtime de Codex del usuario actual o en Program Files. No guardan la ruta de otro usuario ni modifican el PATH global. Si no encuentran Node 22+, el acceso de Codex conserva el fallback a la aplicación normal.
+
+El overlay incorporó lectura nativa independiente de la ventana personalizada y una composición compartida para preview/captura. Su servidor es una instalación separada: actualizar Git no reemplaza otro servidor ya desplegado ni actualiza una fuente abierta en OBS. Consultar la [guía de migración y configuración](OBS_USAGE_OVERLAY.md), especialmente los overrides privados. Conservar la biblioteca, preferencias y mensajes locales al actualizar.

@@ -31,7 +31,7 @@ La galería muestra ejemplos; los fondos no vienen incluidos. [Créditos de los 
 - **Tu espacio:** encuadre sin estirar, preferencias guardadas y soporte para varias ventanas.
 - **Memoria controlada:** cada ventana recibe las miniaturas del catálogo y solamente el fondo completo que está usando. Las ventanas ocultas esperan antes de cargar animaciones.
 - **Vista de uso:** el indicador muestra tokens oficiales de la cuenta, máximo diario, tarea más larga, rachas e historial. El límite y reinicio vienen de la consulta nativa. Elegí tu foto local con `+`. [Origen de los datos](docs/USAGE.md).
-- **Overlay para OBS:** el orbe animado, el porcentaje en vivo y la cuenta regresiva del reinicio pueden mostrarse debajo de la cámara. [Configuración](docs/OBS_USAGE_OVERLAY.md).
+- **Overlay para OBS:** orbe, cuota nativa y reinicio, más un banner rotativo que intercambia posición con el uso. Preview y captura comparten renderer y puerto; redes, mensajes y tiempos se configuran localmente. [Configuración](docs/OBS_USAGE_OVERLAY.md).
 
 ## Empezar
 

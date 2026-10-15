@@ -8,7 +8,8 @@ $repository=Split-Path $PSScriptRoot -Parent
 $entry=Join-Path $repository 'obs-overlay\server.mjs'
 $built=Join-Path $repository 'obs-overlay\dist\index.html'
 if(-not (Test-Path -LiteralPath $built)){throw 'Build the OBS overlay first: npm run build:obs'}
-$node=(Get-Command node.exe -ErrorAction Stop).Source
+. "$PSScriptRoot/node-runtime.ps1"
+$node=(Initialize-CWNode).Source
 $storage=if($DataRoot){$DataRoot}elseif($env:CODEX_WALLPAPERS_DATA){$env:CODEX_WALLPAPERS_DATA}else{Join-Path $env:LOCALAPPDATA 'CodexWallpapers'}
 $storage=[IO.Path]::GetFullPath($storage)
 New-Item -ItemType Directory -Path $storage -Force|Out-Null

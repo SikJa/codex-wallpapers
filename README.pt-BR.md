@@ -31,7 +31,7 @@ A galeria mostra exemplos; os fundos não vêm incluídos. [Créditos dos papéi
 - **Seu espaço:** enquadramento sem distorção, preferências salvas e suporte a várias janelas.
 - **Memória controlada:** cada janela recebe as miniaturas do catálogo e apenas o wallpaper completo em uso. Janelas ocultas aguardam antes de carregar animações.
 - **Prévia de uso:** o indicador mostra tokens oficiais da conta, pico diário, tarefa mais longa, sequências e histórico. Limite e redefinição usam a consulta nativa. Escolha sua foto local com `+`. [Origem dos dados](docs/USAGE.md).
-- **Overlay para OBS:** o orbe animado, a porcentagem ao vivo e a contagem regressiva podem aparecer abaixo da câmera. [Configuração](docs/OBS_USAGE_OVERLAY.md).
+- **Overlay para OBS:** orbe, limite nativo e reinício, com um banner rotativo que troca de posição com o uso. Preview e captura compartilham renderer e porta; redes, mensagens e tempos são configurados localmente. [Configuração](docs/OBS_USAGE_OVERLAY.md).
 
 ## Começar
 

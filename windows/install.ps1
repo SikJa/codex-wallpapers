@@ -3,9 +3,8 @@ param([switch]$Check,[string]$InstallRoot,[string]$ShortcutRoot)
 $ErrorActionPreference='Stop'
 . "$PSScriptRoot/identity.ps1"
 $app=Get-CWPackage
-$node=Get-Command node.exe -ErrorAction Stop
-$nodeVersion=& $node.Source --version
-if($LASTEXITCODE -ne 0 -or $nodeVersion -notmatch '^v(\d+)\.' -or [int]$Matches[1] -lt 22){throw 'Node 22 or newer required.'}
+. "$PSScriptRoot/node-runtime.ps1"
+$node=Initialize-CWNode
 $compiler=Join-Path $env:WINDIR 'Microsoft.NET/Framework64/v4.0.30319/csc.exe'
 $icon=Join-Path $app.Root 'app/resources/chatgpt-app-dark.ico'
 if(-not(Test-Path $compiler) -or -not(Test-Path $icon)){throw 'C# compiler or official multi-resolution icon unavailable.'}

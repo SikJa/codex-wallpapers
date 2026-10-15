@@ -3,6 +3,7 @@ param([string]$Repository)
 $ErrorActionPreference='Stop'
 . "$PSScriptRoot/identity.ps1"
 . "$PSScriptRoot/port.ps1"
+. "$PSScriptRoot/node-runtime.ps1"
 if(-not $Repository){$Repository=Split-Path $PSScriptRoot -Parent}
 $dataRoot=if($env:CODEX_WALLPAPERS_DATA){$env:CODEX_WALLPAPERS_DATA}else{Join-Path $env:LOCALAPPDATA 'CodexWallpapers'}
 New-Item -ItemType Directory -Path $dataRoot -Force|Out-Null
@@ -14,7 +15,8 @@ try {
  $app=Get-CWPackage
  $record.version=$app.Version
  if((Get-CWProcesses $app).Count){Start-CWPackage $app;$record.state='already-open-activated';return}
- $node=Get-Command node.exe -ErrorAction SilentlyContinue
+ $node=$null
+ try{$node=Initialize-CWNode}catch{}
  $port=Get-CWAvailablePort
  $record.port=$port
  # Inspect the verified Store package at each cold opening, including versions

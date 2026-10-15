@@ -31,11 +31,11 @@ The gallery is a showcase, not a bundled collection. [Wallpaper credits](docs/as
 - **Your layout:** fit without stretching, saved preferences and support for additional windows.
 - **Bounded renderer memory:** each window receives the catalog thumbnails and only its currently selected full-size wallpaper. Hidden windows defer animated media.
 - **Usage preview:** click the sidebar indicator for official account tokens, peak day, longest task, streaks and daily history. Quota remaining and reset use the native query. Add a private local photo with `+`. [Data sources](docs/USAGE.md).
-- **OBS usage overlay:** show the animated orb, live percentage and next-reset countdown below your camera. [Setup](docs/OBS_USAGE_OVERLAY.md).
+- **OBS overlay:** animated orb, native quota/reset and a rotating banner that trades places with the usage card. Preview and transparent capture share one renderer and port; messages, social links and priority timing stay in local configuration. [Setup](docs/OBS_USAGE_OVERLAY.md).
 
 ## Get started
 
-You need Codex Desktop for Windows, Node.js 22+, and FFmpeg/ffprobe for importing files. From this repository, run:
+You need Codex Desktop for Windows, Node.js 22+, and FFmpeg/ffprobe for importing files. Windows launchers also discover the current user’s Codex-bundled Node runtime when Node is absent from Explorer’s PATH. From this repository, run:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1
