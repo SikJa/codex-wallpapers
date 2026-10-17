@@ -67,5 +67,38 @@ try{
  const startup=await browser.newContext();const blank=await startup.newPage();await blank.goto(url);await blank.evaluate(code);
  const retained=await blank.evaluate(()=>{const api=window.__CODEX_WALLPAPERS_PUBLIC__,id='bbbbbbbbbbbbbbbbbbbbbbbb';api.catalog({id,title:'Saved but unreadable',kind:'image',mime:'image/png',size:6,width:2,height:2,palette:{}},'');return api.select(id).then(()=>{api.takeRequests();api.reject(id,'Read failed');return api.preferencesSnapshot().settings.selected===id&&!api.status().media;});});
  assert.equal(retained,true);await startup.close();results.push('Failed startup transfer preserves saved selection without an active wallpaper');
+ // Shuffle uses the real picker, transfer path and a controlled browser clock.
+ const shuffleContext=await browser.newContext({viewport:{width:1200,height:820}});
+ const shufflePage=await shuffleContext.newPage();await shufflePage.goto(url);
+ await applyWindow({evaluate:x=>shufflePage.evaluate(x)},library,data,code);
+ await shufflePage.clock.install();await shufflePage.clock.pauseAt(new Date());
+ await shufflePage.evaluate(()=>window.__CODEX_WALLPAPERS_PUBLIC__.open());
+ assert.equal(await shufflePage.locator('#shuffle').inputValue(),'false');
+ assert.equal(await shufflePage.locator('#shuffleMinutes').isDisabled(),true);
+ await shufflePage.locator('#shuffle').selectOption('true');
+ await shufflePage.locator('#shuffleMinutes').fill('1');await shufflePage.locator('#shuffleMinutes').dispatchEvent('change');
+ await shufflePage.screenshot({path:path.join(out,'shuffle-desktop.png')});
+ await shufflePage.setViewportSize({width:620,height:820});
+ assert.equal(await shufflePage.locator('dialog').evaluate(e=>e.scrollWidth>e.clientWidth+1),false);
+ await shufflePage.screenshot({path:path.join(out,'shuffle-narrow.png')});
+ const selection=()=>shufflePage.evaluate(()=>window.__CODEX_WALLPAPERS_PUBLIC__.status().selected);
+ const beforeShuffle=await selection();await shufflePage.clock.runFor(59999);assert.equal(await selection(),beforeShuffle);
+ await shufflePage.clock.runFor(1);await shufflePage.waitForFunction(id=>window.__CODEX_WALLPAPERS_PUBLIC__.status().selected!==id,beforeShuffle);
+ await applyWindow({evaluate:x=>shufflePage.evaluate(x)},library,data,code);
+ assert.equal(await shufflePage.locator('#cw-media').evaluate(e=>e.dataset.cwId),await selection());
+ // Settings and the shuffled selection survive loss of browser storage.
+ const freshShuffle=await browser.newContext();const freshPage=await freshShuffle.newPage();await freshPage.goto(url);
+ await applyWindow({evaluate:x=>freshPage.evaluate(x)},library,data,code);
+ const restored=await freshPage.evaluate(()=>window.__CODEX_WALLPAPERS_PUBLIC__.status().settings);
+ assert.equal(restored.shuffle,true);assert.equal(restored.shuffleMinutes,1);assert.equal(restored.selected,await selection());await freshShuffle.close();
+ // Off, disabled wallpaper and hidden windows do not rotate.
+ await shufflePage.locator('#shuffle').selectOption('false');const stopped=await selection();await shufflePage.clock.runFor(120000);assert.equal(await selection(),stopped);
+ await shufflePage.locator('#shuffle').selectOption('true');await shufflePage.locator('#toggle').click();await shufflePage.clock.runFor(120000);assert.equal(await selection(),stopped);await shufflePage.locator('#toggle').click();
+ await shufflePage.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>true});document.dispatchEvent(new Event('visibilitychange'));});
+ await shufflePage.clock.runFor(120000);assert.equal(await selection(),stopped);
+ await shufflePage.evaluate(()=>{Object.defineProperty(document,'hidden',{configurable:true,get:()=>false});document.dispatchEvent(new Event('visibilitychange'));});
+ await shufflePage.clock.runFor(60000);await shufflePage.waitForFunction(id=>window.__CODEX_WALLPAPERS_PUBLIC__.status().selected!==id,stopped);
+ await shufflePage.evaluate(()=>window.__CODEX_WALLPAPERS_PUBLIC__.dispose());await shufflePage.clock.runFor(120000);assert.equal(await shufflePage.locator('#cw-media').count(),0);
+ await shuffleContext.close();results.push('Shuffle interval, no immediate repeat, disk recovery, off/hidden/disabled pause, resume and disposal');
  console.log(JSON.stringify({passed:results},null,2));await fs.writeFile(path.join(out,'ui-results.json'),JSON.stringify(results,null,2));
 }finally{await browser?.close();await new Promise(r=>server.close(r));}

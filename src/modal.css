@@ -3,3 +3,4 @@ dialog{background:#000;color:#eee;width:min(1080px,calc(100vw - 32px));max-heigh
 @media(max-width:750px){dialog{padding:18px}#layout{grid-template-columns:1fr}#details{border:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:0 18px}#preview{max-height:110px;grid-row:span 2}#details details,#actions{grid-column:1/-1}#grid{max-height:34vh}#empty{min-height:210px;padding:22px}h1{font-size:22px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 #close{position:relative;z-index:2;display:grid;place-items:center;width:42px;height:42px;flex:none;border:0;font-size:24px;line-height:1;padding:0;color:#ccc;cursor:pointer;touch-action:manipulation;-webkit-app-region:no-drag}
+input[type=number]{width:100%;min-height:34px;background:#000;color:#eee;border:1px solid #ffffff28;border-radius:7px;padding:6px 8px}input:disabled{opacity:.5}#shuffle-help{font-size:11px;line-height:1.5;margin:0 0 14px;grid-column:1/-1}

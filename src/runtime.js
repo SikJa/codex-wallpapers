@@ -4,7 +4,7 @@
   if(!document.querySelector('main[data-app-shell-main-surface]'))throw Error('Unsupported Codex shell');
   if(window.__CODEX_DREAM_SKIN_STATE__)throw Error('Another wallpaper mod is active; preserve it and stop.');
   const KEY='codex-wallpapers.preferences.v1';
-  const defaults={selected:null,enabled:true,fit:'cover',brightness:32,sidebarOpacity:48,composerOpacity:98,cardOpacity:62,sidebarRadius:14,composerRadius:18,settingsRadius:18,paletteMode:'auto',accent:'#cbd5e1',surface:'#121316',sidebar:'#111318',motion:'system'};
+  const defaults={selected:null,enabled:true,shuffle:false,shuffleMinutes:5,fit:'cover',brightness:32,sidebarOpacity:48,composerOpacity:98,cardOpacity:62,sidebarRadius:14,composerRadius:18,settingsRadius:18,paletteMode:'auto',accent:'#cbd5e1',surface:'#121316',sidebar:'#111318',motion:'system'};
   function sanitize(input={}){
     const p={...defaults};
     for(const k of ['selected'])if(input[k]===null||/^[a-f0-9]{24}$/.test(input[k]))p[k]=input[k];
@@ -12,11 +12,13 @@
     for(const [k,values] of Object.entries({fit:['cover','contain'],paletteMode:['auto','manual'],motion:['system','play','pause']}))if(values.includes(input[k]))p[k]=input[k];
     for(const k of ['accent','surface','sidebar'])if(/^#[a-f0-9]{6}$/i.test(input[k]))p[k]=input[k];
     if(typeof input.enabled==='boolean')p.enabled=input.enabled;
+    if(typeof input.shuffle==='boolean')p.shuffle=input.shuffle;
+    if(Number.isFinite(input.shuffleMinutes))p.shuffleMinutes=Math.max(1,Math.min(1440,Math.round(input.shuffleMinutes)));
     return p;
   }
   const readPrefs=()=>{try{return sanitize(JSON.parse(localStorage.getItem(KEY)||'{}'));}catch{return sanitize();}};
   let savedAt=0;try{savedAt=Number(JSON.parse(localStorage.getItem(KEY)||'{}')._savedAt)||0;}catch{};
-  let prefs=readPrefs(),current=null,currentUrl=null,seq=0,disposed=false,filter='all',lastFocus=null;
+  let prefs=readPrefs(),current=null,currentUrl=null,seq=0,disposed=false,filter='all',lastFocus=null,shuffleTimer=null;
   const items=new Map(),chunks=new Map(),thumbnailUrls=new Set(),requests=new Set(),accepting=new Set();
   const surface=document.createElement('style');surface.id='cw-surfaces';document.head.append(surface);
   const host=document.createElement('div');host.id='cw-picker';host.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:1000';
@@ -28,13 +30,34 @@
     <label><span>Fit</span><select id="fit"><option value="cover">Fill without stretching</option><option value="contain">Fit entire image</option></select></label>
     <label><span>Brightness <output id="brightness-out"></output></span><input id="brightness" aria-label="Brightness" type="range" min="15" max="65"></label>
     <label><span>Motion</span><select id="motion"><option value="system">Respect reduced motion</option><option value="play">Play</option><option value="pause">Pause</option></select></label>
+    <label><span>Shuffle wallpapers</span><select id="shuffle"><option value="false">Off</option><option value="true">On</option></select></label>
+    <label><span>Change every (minutes)</span><input id="shuffleMinutes" type="number" min="1" max="1440" step="1" aria-describedby="shuffle-help"></label>
+    <p id="shuffle-help">Uses all wallpapers in your library. Pauses while hidden or disabled. Needs at least two wallpapers.</p>
     <details><summary>Appearance</summary><label><span>Palette</span><select id="paletteMode"><option value="auto">Match wallpaper</option><option value="manual">Custom colors</option></select></label>
     <label><span>Accent</span><input id="accent" type="color"></label><label><span>Surfaces</span><input id="surface" type="color"></label><label><span>Sidebar</span><input id="sidebar" type="color"></label>
     ${[['sidebarOpacity','Sidebar opacity',40,100],['composerOpacity','Composer opacity',80,100],['cardOpacity','Suggestion opacity',40,100],['sidebarRadius','Sidebar corners',0,28],['composerRadius','Composer corners',0,28],['settingsRadius','Settings corners',0,28]].map(([id,label,min,max])=>`<label><span>${label}<output id="${id}-out"></output></span><input id="${id}" aria-label="${label}" type="range" min="${min}" max="${max}"></label>`).join('')}</details>
     <div id="actions"><button id="toggle">Disable wallpaper</button><button id="reset">Reset settings</button><button id="help">Add wallpapers</button></div></aside></div><p id="status" role="status">Preparing your library…</p></dialog>`;
   document.body.append(host);const q=id=>root.getElementById(id),dialog=root.querySelector('dialog');
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-  function save(){savedAt=Math.max(Date.now(),savedAt+1);try{localStorage.setItem(KEY,JSON.stringify({...prefs,_savedAt:savedAt}));}catch{}}
+  function save(){savedAt=Math.max(Date.now(),savedAt+1);try{localStorage.setItem(KEY,JSON.stringify({...prefs,_savedAt:savedAt}));}catch{}scheduleShuffle();}
+  function scheduleShuffle(){
+    clearTimeout(shuffleTimer);shuffleTimer=null;
+    if(disposed||!prefs.shuffle||!prefs.enabled||document.hidden||items.size<2)return;
+    shuffleTimer=setTimeout(async()=>{
+      const rotate=async()=>{
+        if(disposed||!prefs.shuffle||!prefs.enabled||document.hidden||requests.size||accepting.size)return;
+        // Another window may have changed the selection before its storage event arrives.
+        try{if(Number(JSON.parse(localStorage.getItem(KEY)||'{}')._savedAt)>savedAt)return;}catch{}
+        const candidates=[...items.keys()].filter(id=>id!==prefs.selected&&id!==current?.dataset.cwId);
+        if(candidates.length)await select(candidates[Math.floor(Math.random()*candidates.length)]);
+      };
+      try{
+        if(navigator.locks)await navigator.locks.request('codex-wallpapers-shuffle',{ifAvailable:true},lock=>lock?rotate():undefined);
+        else if(document.hasFocus())await rotate();
+      }catch{notice('Shuffle could not change the wallpaper. Your previous wallpaper is unchanged.');}
+      finally{scheduleShuffle();}
+    },prefs.shuffleMinutes*60000);
+  }
   function notice(text){q('status').textContent=text;}
   function renderControls(){for(const k of Object.keys(defaults)){const el=q(k);if(el)el.value=String(prefs[k]);const out=q(k+'-out');if(out)out.textContent=prefs[k]+(k.includes('Radius')?' px':'%');}q('toggle').textContent=prefs.enabled?'Disable wallpaper':'Enable wallpaper';for(const k of ['accent','surface','sidebar'])q(k).disabled=prefs.paletteMode==='auto';}
   function palette(item){const p=prefs.paletteMode==='auto'?item?.palette:prefs;return Object.fromEntries(['accent','surface','sidebar'].map(k=>[k,/^#[a-f0-9]{6}$/i.test(p?.[k])?p[k]:defaults[k]]));}
@@ -43,7 +66,7 @@
     const p=palette(items.get(prefs.selected));
     surface.textContent=options.appearanceCSS+`html.cw-active{--cw-accent:${p.accent};--cw-surface:${p.surface};--cw-sidebar:${p.sidebar};--cw-sidebar-opacity:${prefs.sidebarOpacity}%;--cw-composer-opacity:${prefs.composerOpacity}%;--cw-card-opacity:${prefs.cardOpacity}%;--cw-sidebar-radius:${prefs.sidebarRadius}px;--cw-composer-radius:${prefs.composerRadius}px;--cw-settings-radius:${prefs.settingsRadius}px;}`;
     if(current){current.hidden=!active;current.style.objectFit=prefs.fit;current.style.filter=`brightness(${prefs.brightness/100})`;if(current.tagName==='VIDEO'){if(!active||document.hidden||prefs.motion==='pause'||(prefs.motion==='system'&&reduced.matches))current.pause();else current.play().catch(()=>notice('The video is ready. Open Wallpapers to resume playback.'));}}
-    renderControls();
+    renderControls();q('shuffleMinutes').disabled=!prefs.shuffle;scheduleShuffle();
   }
   function updateDetails(){const item=items.get(prefs.selected);q('preview').hidden=!item;if(item){q('preview').src=item.thumbnail;q('current').textContent=item.title;q('dimensions').textContent=`${item.width} × ${item.height} · ${item.kind==='video'?'Video':'Image'}`;}else{q('current').textContent='No wallpaper selected';q('dimensions').textContent='';}for(const b of q('grid').children)b.setAttribute('aria-pressed',String(b.dataset.id===prefs.selected));}
   function updateFilter(){let visible=0;for(const b of q('grid').children){const i=items.get(b.dataset.id);b.hidden=!((filter==='all'||i.kind===filter)&&i.title.toLocaleLowerCase().includes(q('search').value.toLocaleLowerCase()));if(!b.hidden)visible++;}q('empty').hidden=items.size>0;q('no-results').hidden=visible>0||items.size===0;}
@@ -90,7 +113,7 @@
   q('help').onclick=q('empty-help').onclick=()=>{q('guide').hidden=!q('guide').hidden;};
   q('toggle').onclick=()=>{prefs.enabled=!prefs.enabled;save();appearance();};
   q('reset').onclick=()=>{prefs={...defaults,selected:prefs.selected};save();appearance();notice('Settings reset.');};
-  for(const k of Object.keys(defaults)){const el=q(k);if(!el)continue;el.addEventListener('input',()=>{prefs=sanitize({...prefs,[k]:el.type==='range'?Number(el.value):el.value});save();appearance();});}
+  for(const k of Object.keys(defaults)){const el=q(k);if(!el)continue;el.addEventListener(el.type==='number'?'change':'input',()=>{prefs=sanitize({...prefs,[k]:k==='shuffle'?el.value==='true':['range','number'].includes(el.type)?Number(el.value):el.value});save();appearance();});}
   q('search').oninput=updateFilter;for(const b of q('filters').children)b.onclick=()=>{filter=b.dataset.kind;for(const x of q('filters').children)x.setAttribute('aria-pressed',String(x===b));updateFilter();};
   const menuSelector='button[aria-label="Abrir menú de perfil"],button[aria-label="Abrir menú del perfil"],button[aria-label="Open profile menu"],button[aria-label="Abrir menu de perfil"]';
   const menuHandlers=new Map();
@@ -109,7 +132,7 @@
   const observer=new MutationObserver(insertMenu);observer.observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['aria-labelledby','aria-label']});insertMenu();
   const visibility=()=>{appearance();if(!document.hidden&&items.has(prefs.selected)&&current?.dataset.cwId!==prefs.selected)select(prefs.selected,{persist:false});};document.addEventListener('visibilitychange',visibility);reduced.addEventListener('change',visibility);
   const storage=e=>{if(e.key!==KEY)return;const next=readPrefs();try{savedAt=Number(JSON.parse(e.newValue||'{}')._savedAt)||savedAt;}catch{}prefs=next;if(items.has(next.selected)&&current?.dataset.cwId!==next.selected)select(next.selected,{persist:false});else{appearance();updateDetails();}};window.addEventListener('storage',storage);
-  function dispose(){disposed=true;seq++;window.__CW_DOT_SHORTCUT__?.dispose();document.getElementById('cw-dots-compatibility')?.remove();window.__CW_USAGE_PANEL__?.dispose();document.getElementById('cw-usage-panel-style')?.remove();window.__CW_USAGE__?.dispose();observer.disconnect();for(const [menu,handler] of menuHandlers)menu.removeEventListener('keydown',handler,true);menuHandlers.clear();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',visibility);window.removeEventListener('storage',storage);current?.pause?.();current?.remove();if(currentUrl)URL.revokeObjectURL(currentUrl);host.remove();surface.remove();document.documentElement.classList.remove('cw-active');document.querySelectorAll('[data-cw-menu]').forEach(e=>e.remove());for(const url of thumbnailUrls)URL.revokeObjectURL(url);items.clear();chunks.clear();requests.clear();accepting.clear();delete window.__CODEX_WALLPAPERS_PUBLIC__;}
+  function dispose(){disposed=true;clearTimeout(shuffleTimer);shuffleTimer=null;seq++;window.__CW_DOT_SHORTCUT__?.dispose();document.getElementById('cw-dots-compatibility')?.remove();window.__CW_USAGE_PANEL__?.dispose();document.getElementById('cw-usage-panel-style')?.remove();window.__CW_USAGE__?.dispose();observer.disconnect();for(const [menu,handler] of menuHandlers)menu.removeEventListener('keydown',handler,true);menuHandlers.clear();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',visibility);window.removeEventListener('storage',storage);current?.pause?.();current?.remove();if(currentUrl)URL.revokeObjectURL(currentUrl);host.remove();surface.remove();document.documentElement.classList.remove('cw-active');document.querySelectorAll('[data-cw-menu]').forEach(e=>e.remove());for(const url of thumbnailUrls)URL.revokeObjectURL(url);items.clear();chunks.clear();requests.clear();accepting.clear();delete window.__CODEX_WALLPAPERS_PUBLIC__;}
   const api={preferencesSnapshot:()=>({schema:1,updatedAt:savedAt,settings:{...prefs}}),restorePreferences(record){if(record?.schema!==1||!Number.isFinite(record.updatedAt)||record.updatedAt<=savedAt)return false;prefs=sanitize(record.settings);savedAt=record.updatedAt;try{localStorage.setItem(KEY,JSON.stringify({...prefs,_savedAt:savedAt}));}catch{}return true;},append,catalog,supply,reject,takeRequests,select,open,close,dispose,ids:()=>[...items.keys()],status:()=>({count:items.size,selected:prefs.selected,enabled:prefs.enabled,media:!!current,pending:requests.size+accepting.size,profileButton:!!document.querySelector('[data-cw-menu]'),settings:{...prefs}}),ready(){if(!savedAt&&prefs.selected)save();renderControls();updateFilter();if(items.has(prefs.selected))select(prefs.selected,{persist:false});else{notice(items.size?'Choose your first wallpaper.':'Your library is empty. Add your first wallpaper with your agent.');}return api.status();}};
   window.__CODEX_WALLPAPERS_PUBLIC__=api;renderControls();return 'installed';
 })

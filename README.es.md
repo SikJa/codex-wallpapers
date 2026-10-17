@@ -59,6 +59,8 @@ Si una actualización cambia la interfaz y falla la comprobación, Codex abre no
 
 ## Importar, guardar y recuperar tus fondos
 
+En **Perfil → Wallpapers**, activá **Shuffle wallpapers → On** y elegí **Change every (minutes)** entre 1 y 1440 minutos (5 por defecto). Rota al azar entre todos los fondos importados sin repetir inmediatamente el actual. Con menos de dos fondos espera; **Off** cancela la rotación y conserva el fondo actual. También se pausa al ocultar la ventana o desactivar el fondo. Al volver, espera un intervalo completo. El modo y el intervalo se guardan junto con las preferencias. El auxiliar de la sesión personalizada debe estar activo para cargar cada nuevo medio.
+
 Desde la carpeta del repositorio, con Node, FFmpeg y ffprobe disponibles:
 
 ```powershell

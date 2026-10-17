@@ -59,6 +59,8 @@ An incompatible interface opens normally. Static inspection cannot generate adap
 
 ## Importing and keeping wallpapers
 
+In **Profile → Wallpapers**, set **Shuffle wallpapers → On**, then choose **Change every (minutes)** from 1 to 1440 (default: 5). Shuffle picks from all imported wallpapers without immediately repeating the current one. It waits when fewer than two wallpapers are available. **Off** cancels rotation and keeps the current wallpaper. Hiding the window or disabling wallpapers pauses rotation; returning starts a full interval. The mode and interval persist with your preferences. The personalized session helper must be running to transfer each new media file.
+
 From the repository directory, with Node, FFmpeg and ffprobe available:
 
 ```powershell

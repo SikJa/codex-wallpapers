@@ -59,6 +59,8 @@ Depois, escolha o fundo em **Perfil → Wallpapers**. A biblioteca começa vazia
 
 ## Como funciona e onde ficam os dados
 
+Em **Profile → Wallpapers**, ative **Shuffle wallpapers → On** e ajuste **Change every (minutes)** entre 1 e 1440 minutos (padrão: 5). Alterna aleatoriamente entre todos os fundos importados sem repetir imediatamente o atual; precisa de pelo menos dois. **Off** mantém o fundo atual. A rotação pausa com a janela oculta ou o fundo desativado e espera um intervalo completo ao voltar. A configuração fica salva. O auxiliar da sessão personalizada precisa estar ativo para carregar os arquivos.
+
 O atalho **Codex Wallpapers** abre o aplicativo oficial e aplica a personalização por uma conexão local verificada. Se o Codex já estiver aberto normalmente, o atalho apenas ativa essa instância. Feche normalmente quando terminar e use o atalho personalizado na próxima abertura. Uma interface incompatível abre sem personalização; a verificação automática não adapta o código a qualquer mudança futura.
 
 O código instalado fica em `%LOCALAPPDATA%\CodexWallpapers\app`; biblioteca, mídias e preferências ficam em `%LOCALAPPDATA%\CodexWallpapers`. `CODEX_WALLPAPERS_DATA` permite outra pasta: importação e inicialização devem usar a mesma. A seleção é persistida em disco e pode ser recuperada sem o armazenamento do navegador. Faça backup da pasta de dados. A biblioteca inicial é vazia e os arquivos pessoais não são publicados no GitHub.
