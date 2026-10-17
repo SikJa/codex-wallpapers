@@ -49,6 +49,51 @@ Adjuntale una imagen o un video a tu agente en Codex y pedile:
 
 Después elegilo en **Perfil → Wallpapers**. La biblioteca empieza vacía. Recomendamos **Wallpaper Engine en Steam** como fuente: usá una imagen o video local que tengas permiso de usar. Las escenas del Workshop necesitan una imagen o un video grabado/exportado. [Guía de medios](docs/MEDIA.md).
 
+## Cómo funciona el Codex personalizado
+
+El acceso **Codex Wallpapers** abre la aplicación oficial instalada en Windows. No instala otro Codex ni reemplaza sus archivos. Antes de aplicar el tema, inspecciona la interfaz instalada, abre una conexión de depuración limitada a esta PC y comprueba que pertenece al proceso oficial. Después carga el fondo, el selector y el indicador de uso. Un auxiliar acompaña esa sesión para guardar cambios y atender ventanas nuevas; no es un servicio que reinicie Codex cuando algo falla.
+
+Si abriste Codex desde el icono original, abrir luego el acceso personalizado no transforma esa instancia: activa la ventana existente. Cerrá Codex normalmente cuando termines y abrilo desde **Codex Wallpapers**. Anclar el icono original puede volver a abrirlo sin tema; comprobá el destino del acceso anclado.
+
+Si una actualización cambia la interfaz y falla la comprobación, Codex abre normal. La comprobación automática no puede adaptar código a cualquier cambio futuro. El botón nativo de reinicio por actualización tiene un traspaso independiente y limitado; su alcance y las pruebas pendientes están en [Actualizaciones](docs/UPDATES.md).
+
+## Importar, guardar y recuperar tus fondos
+
+Desde la carpeta del repositorio, con Node, FFmpeg y ffprobe disponibles:
+
+```powershell
+node .\src\cli.mjs data-dir
+node .\src\cli.mjs import "C:\Fondos\mi-fondo.mp4" --title "Mi fondo"
+node .\src\cli.mjs list
+```
+
+La importación copia el archivo a la biblioteca y genera una miniatura y una paleta; conserva el original. En la siguiente apertura personalizada, elegí el archivo desde **Perfil → Wallpapers**. Los controles del proyecto están en inglés, aunque Codex esté en español. Para incorporar la biblioteca a una sesión ya abierta, seguí la [guía del agente](docs/AGENT.md): requiere verificar primero la conexión existente.
+
+| Qué se guarda | Dónde, por defecto |
+| --- | --- |
+| Código instalado y lanzador | `%LOCALAPPDATA%\CodexWallpapers\app` |
+| Biblioteca, medios y preferencias | `%LOCALAPPDATA%\CodexWallpapers` |
+| Tu copia de desarrollo | La carpeta donde clonaste este repo |
+
+`CODEX_WALLPAPERS_DATA` permite elegir otra carpeta de datos. Importar y arrancar deben usar la misma carpeta. La selección y los ajustes se guardan en disco y se restauran al abrir una sesión personalizada; el almacenamiento del navegador no es la única copia. Un medio inválido no debe reemplazar un fondo que ya funciona. Los videos se reproducen sin sonido y respetan movimiento reducido.
+
+Para hacer un respaldo, copiá la carpeta de datos, incluidos biblioteca, medios y preferencias. Los fondos y la foto local no se suben a GitHub. Otra persona empieza con su propia biblioteca vacía y sus datos de cuenta; las imágenes de la galería no se instalan.
+
+## Actualizar e iniciar con Windows
+
+**Actualizar Codex, actualizar este repo y actualizar la copia instalada son pasos distintos.** `git pull` trae el código al clon; no reemplaza `%LOCALAPPDATA%\CodexWallpapers\app`. Para actualizar una instalación existente, respaldá datos y seguí [la actualización conservando medios](docs/UPDATES.md). No ejecutes el instalador encima de una instalación existente.
+
+El instalador crea el acceso en Inicio; **no habilita automáticamente el inicio de Windows**. Si lo querés, copiá el acceso personalizado a la carpeta que abre `shell:startup` y verificá que esté habilitado en Aplicaciones de inicio de Windows. El overlay tiene su propio arranque y puerto local: [guía de OBS](docs/OBS_USAGE_OVERLAY.md). Tener Codex abierto no prueba que ese servidor esté encendido.
+
+| Problema | Qué comprobar |
+| --- | --- |
+| Abre sin personalización | Acceso usado, instancia anterior abierta y logs de compatibilidad en la carpeta de datos. |
+| No aparece Wallpapers o el uso | Versión del código instalado y reconocimiento del menú de perfil; se admite «Abrir menú del perfil». |
+| No recuerda el fondo | Misma carpeta de datos al importar y arrancar, permisos de escritura y existencia del medio guardado. |
+| OBS no abre al iniciar Windows | Entrada del overlay habilitada en Aplicaciones de inicio; el instalador de OBS con `-InstallStartup` puede reactivarla. |
+
+No borres preferencias ni locks para probar suerte. Primero comprobá qué proceso los usa y consultá [diagnóstico y recuperación](docs/UPDATES.md).
+
 ## Seguridad y estado
 
 **Proyecto independiente y experimental.** Aplica CSS/JavaScript mediante depuración local de Electron. No es un plugin oficial ni está aprobado por OpenAI; no se garantiza compatibilidad ni ausencia de restricciones sobre la cuenta. [Seguridad y alcance](docs/SECURITY.md).

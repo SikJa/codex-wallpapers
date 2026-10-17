@@ -60,6 +60,14 @@ if($InstallStartup){
   $link.WindowStyle=7
   $link.Description='Local Codex usage overlay for OBS; never launches or restarts Codex.'
   $link.Save()
+  # An existing Startup shortcut can remain disabled after being recreated.
+  # -InstallStartup explicitly requests enabling it for this Windows user.
+  $approvalKey='HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\StartupFolder'
+  New-Item -Path $approvalKey -Force|Out-Null
+  $approvalName=[IO.Path]::GetFileName($shortcut)
+  $previous=(Get-ItemProperty -LiteralPath $approvalKey -Name $approvalName -ErrorAction SilentlyContinue).$approvalName
+  if($previous){[IO.File]::WriteAllBytes((Join-Path $storage 'obs-startup-approval.before.bin'),[byte[]]$previous)}
+  New-ItemProperty -LiteralPath $approvalKey -Name $approvalName -PropertyType Binary -Value ([byte[]](2,0,0,0,0,0,0,0,0,0,0,0)) -Force|Out-Null
   Write-Output "Startup shortcut: $shortcut"
 }
 Write-Output "OBS overlay ready: http://127.0.0.1:$port/"

@@ -3,7 +3,7 @@
   if (window.__CW_USAGE__?.version === 8) return window.__CW_USAGE__;
   window.__CW_USAGE__?.dispose?.();
   document.getElementById('cw-usage-style')?.remove();
-  const selector = 'button[aria-label="Abrir menú de perfil"],button[aria-label="Open profile menu"],button[aria-label="Abrir menu de perfil"],button[aria-label="Open settings"],button[aria-label="Abrir configuración"]';
+  const selector = 'button[aria-label="Abrir menú de perfil"],button[aria-label="Abrir menú del perfil"],button[aria-label="Open profile menu"],button[aria-label="Abrir menu de perfil"],button[aria-label="Open settings"],button[aria-label="Abrir configuración"]';
   const queryKey = ['rate-limit-status'];
   const findUsageQuery = () => client?.getQueryCache().findAll({queryKey, exact: false})
     .filter(q => q.queryKey[0] === queryKey[0] && q.queryKey[1] !== 'image-generation' && q.state.data?.rate_limit)

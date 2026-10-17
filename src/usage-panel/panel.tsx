@@ -12,7 +12,7 @@ type Rate={percent:number|null;resetAt:number|null;updatedAt:number|null;plan?:s
 type PanelAPI={version:number;setSnapshot:(data:LocalSnapshot|null)=>void;status:()=>object;dispose:()=>void}
 declare global{interface Window{__CW_USAGE_PANEL__?:PanelAPI;__CW_USAGE__?:{getSnapshot?:()=>Rate}}}
 
-const PROFILE='button[aria-label="Open profile menu"],button[aria-label="Abrir menú de perfil"],button[aria-label="Abrir menu de perfil"]'
+const PROFILE='button[aria-label="Open profile menu"],button[aria-label="Abrir menú de perfil"],button[aria-label="Abrir menú del perfil"],button[aria-label="Abrir menu de perfil"]'
 const PHOTO_KEY='codex-wallpapers.usage-photo.v1'
 const plans=new Set(['Free','Plus','Pro','Pro Max','Team','Business','Enterprise','Edu'])
 const compact=new Intl.NumberFormat('en',{notation:'compact',maximumFractionDigits:1})

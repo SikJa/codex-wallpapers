@@ -56,3 +56,13 @@ Depois, escolha o fundo em **Perfil → Wallpapers**. A biblioteca começa vazia
 **Preview:** os testes isolados de transferência, interface e atalho do Windows passaram. A biblioteca completa não é mais copiada para cada renderer. A inicialização em uma instalação limpa ainda precisa de validação manual. Se a personalização falhar, o Codex continua aberto; o projeto nunca reinicia o aplicativo para tentar se recuperar.
 
 [Guia do agente (ES)](docs/AGENT.md) · [Atualizações (ES)](docs/UPDATES.md) · [Testes (ES)](docs/TESTING.md) · [Licença MIT do código](LICENSE)
+
+## Como funciona e onde ficam os dados
+
+O atalho **Codex Wallpapers** abre o aplicativo oficial e aplica a personalização por uma conexão local verificada. Se o Codex já estiver aberto normalmente, o atalho apenas ativa essa instância. Feche normalmente quando terminar e use o atalho personalizado na próxima abertura. Uma interface incompatível abre sem personalização; a verificação automática não adapta o código a qualquer mudança futura.
+
+O código instalado fica em `%LOCALAPPDATA%\CodexWallpapers\app`; biblioteca, mídias e preferências ficam em `%LOCALAPPDATA%\CodexWallpapers`. `CODEX_WALLPAPERS_DATA` permite outra pasta: importação e inicialização devem usar a mesma. A seleção é persistida em disco e pode ser recuperada sem o armazenamento do navegador. Faça backup da pasta de dados. A biblioteca inicial é vazia e os arquivos pessoais não são publicados no GitHub.
+
+`git pull` atualiza o clone, não a cópia instalada. Siga o [procedimento de atualização](docs/UPDATES.md), preservando os dados. A instalação cria um atalho no menu Iniciar, mas não ativa a inicialização com Windows: copie o atalho personalizado para `shell:startup` e confira se está habilitado nos aplicativos de inicialização. O [overlay OBS](docs/OBS_USAGE_OVERLAY.md) tem servidor e inicialização separados.
+
+Consulte o [guia detalhado em espanhol](README.es.md) ou [em inglês](README.md) para comandos de importação, diagnóstico e limites da atualização automática.

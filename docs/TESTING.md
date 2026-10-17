@@ -109,3 +109,11 @@ The native OBS reader also returned real account quota and a reset timestamp usi
 The Taste static review reports numbering, compact labels, gradients and shadows inherited from the user-approved overlay design; those are intentional preservation exceptions, not a requested redesign. The browser inspector also flags compact text sizes and the lack of a marketing-style focal point at 1000/390 pixels. Those review findings are retained for this fixed-size, already-approved OBS composition; the Taste gate is not reported as passing. Runtime geometry is covered separately by the browser tests.
 
 Remaining validation: a clean installation on another PC, and a future complete official installer/update-button transition. Static markers and isolated updater fixtures do not guarantee that every future Codex UI will remain compatible.
+
+## Persistencia y menú de perfil (2026-10-17)
+
+Se publican las correcciones del 16 de octubre: reconocimiento de «Abrir menú del perfil» en tema, indicador y panel, y reactivación explícita de la entrada de inicio del overlay cuando se solicita `-InstallStartup`, con respaldo del valor anterior.
+
+En esta revisión pasaron 17 pruebas unitarias, la suite de uso nativo simulado y los 11 escenarios de `tests/ui.mjs` en Brave aislado con medios sintéticos generados con FFmpeg. Se verificaron imagen y video silencioso, movimiento reducido, ventanas adicionales, sincronización, rechazo de medios corruptos, recreación del documento y recuperación desde preferencias en disco después de perder el almacenamiento del navegador. También se comprobó que una transferencia fallida al arrancar conserve la selección guardada.
+
+Una lectura del endpoint existente, después de validar su identidad, confirmó en la instalación personal la biblioteca de 17 medios, el video seleccionado cargado a 3440 píxeles de ancho y el indicador con datos de cuenta. No se reinició Codex ni se sustituyeron fondos personales. Esto no sustituye una instalación limpia en otra PC ni prueba un nuevo inicio de sesión de Windows.

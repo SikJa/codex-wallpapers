@@ -49,6 +49,51 @@ Attach an image or video to your Codex agent and ask:
 
 Then choose it in **Profile → Wallpapers**. The library starts empty. **Wallpaper Engine on Steam** is a suggested source; use a local image or video you have permission to use. Workshop scenes need an image or a recorded/exported video. [Media guide (ES)](docs/MEDIA.md).
 
+## How personalized startup works
+
+**Codex Wallpapers** launches the official Windows app, not a separate Codex build. It inspects the installed interface, opens a loopback-only debugging connection, verifies the official process identity, then loads the wallpaper, picker and usage indicator. A session helper saves preferences and handles new windows. It does not restart Codex to recover from failures.
+
+If Codex is already running from its original shortcut, the personalized launcher only activates that existing instance. Quit normally when convenient, then open **Codex Wallpapers**. Pinning the original app shortcut can launch without personalization; check the pinned shortcut target.
+
+An incompatible interface opens normally. Static inspection cannot generate adaptations for every future release. The native update/restart button has a bounded independent handoff; see [update behavior and verification limits](docs/UPDATES.md).
+
+## Importing and keeping wallpapers
+
+From the repository directory, with Node, FFmpeg and ffprobe available:
+
+```powershell
+node .\src\cli.mjs data-dir
+node .\src\cli.mjs import "C:\Wallpapers\background.mp4" --title "My wallpaper"
+node .\src\cli.mjs list
+```
+
+Import copies the media into your library and generates a thumbnail and palette, preserving the original. Choose it in **Profile → Wallpapers** on the next personalized launch. Updating an already open session requires a verified existing connection; see the [agent guide](docs/AGENT.md).
+
+| Content | Default location |
+| --- | --- |
+| Installed code and launcher | `%LOCALAPPDATA%\CodexWallpapers\app` |
+| Library, media and preferences | `%LOCALAPPDATA%\CodexWallpapers` |
+| Development checkout | Wherever you cloned this repository |
+
+`CODEX_WALLPAPERS_DATA` overrides the data directory. Import and startup must use the same directory. Selection and appearance settings persist on disk and restore on personalized startup, even without browser storage. Invalid replacement media preserves an already working background. Videos are silent and respect reduced motion.
+
+Back up the data directory, including library, media and preferences. Personal wallpapers and the local profile photo are not uploaded to GitHub. Each new user starts with an empty library and their own account data; showcase images are not included.
+
+## Updates and Windows sign-in
+
+**Updating Codex, pulling this repository and updating the installed copy are separate operations.** `git pull` does not replace `%LOCALAPPDATA%\CodexWallpapers\app`. Back up your data and follow the [preserving-data update procedure](docs/UPDATES.md); the installer refuses to overwrite an existing installation.
+
+Installation creates a Start menu shortcut, **not automatic Windows startup**. To enable sign-in startup, copy the personalized shortcut into the folder opened by `shell:startup` and check that Windows Startup Apps enables it. OBS runs separately on a local port and has its own startup setup: [OBS guide](docs/OBS_USAGE_OVERLAY.md).
+
+| Symptom | Check |
+| --- | --- |
+| Codex opens without the theme | Shortcut target, an already running normal instance, compatibility logs in the data directory. |
+| Wallpaper picker or usage is missing | Installed code version and profile-menu recognition; the new Spanish label is supported. |
+| Wallpaper is forgotten | Same data directory for import/startup, write permissions and saved media availability. |
+| OBS does not start with Windows | Its Startup Apps entry; explicit `-InstallStartup` re-enables a disabled overlay entry. |
+
+Do not delete preferences or locks blindly. Check process ownership first; see [recovery](docs/UPDATES.md).
+
 ## Safety & status
 
 **Independent, experimental project.** It applies CSS/JavaScript through local Electron debugging. It is not an official plugin or approved by OpenAI; compatibility and freedom from account restrictions are not guaranteed. [Security & scope](docs/SECURITY.en.md).

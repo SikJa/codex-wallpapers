@@ -17,6 +17,10 @@ try{
  await page.evaluate((await fs.readFile('src/usage.js','utf8'))+'()');
  assert.equal(await page.locator('[data-cw-usage]').textContent(),'62%');
  assert.deepEqual(await page.evaluate(()=>window.__CW_USAGE__.getSnapshot()),await page.evaluate(()=>({percent:62,resetAt:1791053259000,updatedAt:window.nativeQuery.state.dataUpdatedAt,plan:'pro'})));
+ // Codex 26.1013 uses a new Spanish label; remount against it, not the old DOM.
+ await page.evaluate(()=>{window.__CW_USAGE__.dispose();document.querySelector('button').setAttribute('aria-label','Abrir menú del perfil');});
+ await page.evaluate((await fs.readFile('src/usage.js','utf8'))+'()');
+ assert.equal(await page.locator('[data-cw-usage]').textContent(),'62%');
  assert.equal(await page.locator('button [data-cw-usage]').count(),0);
  assert.equal(await page.locator('[data-cw-usage] svg circle').count(),3);
  assert.equal(await page.locator('.rail-footer > :first-child').getAttribute('data-cw-usage'),'');
