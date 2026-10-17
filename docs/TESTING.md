@@ -121,3 +121,8 @@ Una lectura del endpoint existente, después de validar su identidad, confirmó 
 ## Shuffle (2026-10-17)
 
 El selector incorpora rotación aleatoria de toda la biblioteca, apagada por defecto, con intervalo de 1 a 1440 minutos. La suite UI usa reloj controlado y transferencia real de medios sintéticos: comprueba el límite del intervalo, ausencia de repetición inmediata, persistencia en disco en un contexto nuevo, pausa al apagar shuffle/desactivar fondos/ocultar la ventana, reanudación y limpieza del temporizador. Capturas revisadas a 1200 y 620 píxeles sin desborde horizontal. Pasaron también las 17 pruebas unitarias, sintaxis y enlaces de documentación. Las ventanas coordinan el cambio con Web Locks cuando está disponible; el fallback solo rota en la ventana enfocada.
+
+
+## Separación de OBS (2026-10-17)
+
+El código, servidor, compilación, pruebas y lanzador de OBS se retiraron de este repositorio. Las menciones anteriores a OBS son evidencia histórica de una instalación local separada, no funciones del proyecto distribuido. Se conserva el indicador de uso dentro de Codex. Tras la separación pasaron las 13 pruebas unitarias correspondientes a Codex, sintaxis y enlaces. La copia local de streaming se conserva fuera del repositorio.

@@ -31,7 +31,8 @@ La galería muestra ejemplos; los fondos no vienen incluidos. [Créditos de los 
 - **Tu espacio:** encuadre sin estirar, preferencias guardadas y soporte para varias ventanas.
 - **Memoria controlada:** cada ventana recibe las miniaturas del catálogo y solamente el fondo completo que está usando. Las ventanas ocultas esperan antes de cargar animaciones.
 - **Vista de uso:** el indicador muestra tokens oficiales de la cuenta, máximo diario, tarea más larga, rachas e historial. El límite y reinicio vienen de la consulta nativa. Elegí tu foto local con `+`. [Origen de los datos](docs/USAGE.md).
-- **Overlay para OBS:** orbe, cuota nativa y reinicio, más un banner rotativo que intercambia posición con el uso. Preview y captura comparten renderer y puerto; redes, mensajes y tiempos se configuran localmente. [Configuración](docs/OBS_USAGE_OVERLAY.md).
+
+Este repositorio contiene únicamente la personalización de Codex. Los overlays de streaming para OBS son un proyecto separado: no se instalan ni se inician desde acá.
 
 ## Empezar
 
@@ -85,14 +86,13 @@ Para hacer un respaldo, copiá la carpeta de datos, incluidos biblioteca, medios
 
 **Actualizar Codex, actualizar este repo y actualizar la copia instalada son pasos distintos.** `git pull` trae el código al clon; no reemplaza `%LOCALAPPDATA%\CodexWallpapers\app`. Para actualizar una instalación existente, respaldá datos y seguí [la actualización conservando medios](docs/UPDATES.md). No ejecutes el instalador encima de una instalación existente.
 
-El instalador crea el acceso en Inicio; **no habilita automáticamente el inicio de Windows**. Si lo querés, copiá el acceso personalizado a la carpeta que abre `shell:startup` y verificá que esté habilitado en Aplicaciones de inicio de Windows. El overlay tiene su propio arranque y puerto local: [guía de OBS](docs/OBS_USAGE_OVERLAY.md). Tener Codex abierto no prueba que ese servidor esté encendido.
+El instalador crea el acceso en Inicio; **no habilita automáticamente el inicio de Windows**. Si lo querés, copiá el acceso personalizado a la carpeta que abre `shell:startup` y verificá que esté habilitado en Aplicaciones de inicio de Windows.
 
 | Problema | Qué comprobar |
 | --- | --- |
 | Abre sin personalización | Acceso usado, instancia anterior abierta y logs de compatibilidad en la carpeta de datos. |
 | No aparece Wallpapers o el uso | Versión del código instalado y reconocimiento del menú de perfil; se admite «Abrir menú del perfil». |
 | No recuerda el fondo | Misma carpeta de datos al importar y arrancar, permisos de escritura y existencia del medio guardado. |
-| OBS no abre al iniciar Windows | Entrada del overlay habilitada en Aplicaciones de inicio; el instalador de OBS con `-InstallStartup` puede reactivarla. |
 
 No borres preferencias ni locks para probar suerte. Primero comprobá qué proceso los usa y consultá [diagnóstico y recuperación](docs/UPDATES.md).
 

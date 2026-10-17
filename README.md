@@ -31,7 +31,8 @@ The gallery is a showcase, not a bundled collection. [Wallpaper credits](docs/as
 - **Your layout:** fit without stretching, saved preferences and support for additional windows.
 - **Bounded renderer memory:** each window receives the catalog thumbnails and only its currently selected full-size wallpaper. Hidden windows defer animated media.
 - **Usage preview:** click the sidebar indicator for official account tokens, peak day, longest task, streaks and daily history. Quota remaining and reset use the native query. Add a private local photo with `+`. [Data sources](docs/USAGE.md).
-- **OBS overlay:** animated orb, native quota/reset and a rotating banner that trades places with the usage card. Preview and transparent capture share one renderer and port; messages, social links and priority timing stay in local configuration. [Setup](docs/OBS_USAGE_OVERLAY.md).
+
+This repository contains Codex personalization only. OBS streaming overlays are a separate project and are not installed or started by it.
 
 ## Get started
 
@@ -85,14 +86,13 @@ Back up the data directory, including library, media and preferences. Personal w
 
 **Updating Codex, pulling this repository and updating the installed copy are separate operations.** `git pull` does not replace `%LOCALAPPDATA%\CodexWallpapers\app`. Back up your data and follow the [preserving-data update procedure](docs/UPDATES.md); the installer refuses to overwrite an existing installation.
 
-Installation creates a Start menu shortcut, **not automatic Windows startup**. To enable sign-in startup, copy the personalized shortcut into the folder opened by `shell:startup` and check that Windows Startup Apps enables it. OBS runs separately on a local port and has its own startup setup: [OBS guide](docs/OBS_USAGE_OVERLAY.md).
+Installation creates a Start menu shortcut, **not automatic Windows startup**. To enable sign-in startup, copy the personalized shortcut into the folder opened by `shell:startup` and check that Windows Startup Apps enables it.
 
 | Symptom | Check |
 | --- | --- |
 | Codex opens without the theme | Shortcut target, an already running normal instance, compatibility logs in the data directory. |
 | Wallpaper picker or usage is missing | Installed code version and profile-menu recognition; the new Spanish label is supported. |
 | Wallpaper is forgotten | Same data directory for import/startup, write permissions and saved media availability. |
-| OBS does not start with Windows | Its Startup Apps entry; explicit `-InstallStartup` re-enables a disabled overlay entry. |
 
 Do not delete preferences or locks blindly. Check process ownership first; see [recovery](docs/UPDATES.md).
 

@@ -1,5 +1,4 @@
 node_modules/
-obs-overlay/dist/
 .local/
 test-results/
 *.log

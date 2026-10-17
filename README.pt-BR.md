@@ -31,7 +31,8 @@ A galeria mostra exemplos; os fundos não vêm incluídos. [Créditos dos papéi
 - **Seu espaço:** enquadramento sem distorção, preferências salvas e suporte a várias janelas.
 - **Memória controlada:** cada janela recebe as miniaturas do catálogo e apenas o wallpaper completo em uso. Janelas ocultas aguardam antes de carregar animações.
 - **Prévia de uso:** o indicador mostra tokens oficiais da conta, pico diário, tarefa mais longa, sequências e histórico. Limite e redefinição usam a consulta nativa. Escolha sua foto local com `+`. [Origem dos dados](docs/USAGE.md).
-- **Overlay para OBS:** orbe, limite nativo e reinício, com um banner rotativo que troca de posição com o uso. Preview e captura compartilham renderer e porta; redes, mensagens e tempos são configurados localmente. [Configuração](docs/OBS_USAGE_OVERLAY.md).
+
+Este repositório contém somente a personalização do Codex. Overlays de streaming para OBS são um projeto separado e não são instalados nem iniciados aqui.
 
 ## Começar
 
@@ -65,6 +66,6 @@ O atalho **Codex Wallpapers** abre o aplicativo oficial e aplica a personalizaç
 
 O código instalado fica em `%LOCALAPPDATA%\CodexWallpapers\app`; biblioteca, mídias e preferências ficam em `%LOCALAPPDATA%\CodexWallpapers`. `CODEX_WALLPAPERS_DATA` permite outra pasta: importação e inicialização devem usar a mesma. A seleção é persistida em disco e pode ser recuperada sem o armazenamento do navegador. Faça backup da pasta de dados. A biblioteca inicial é vazia e os arquivos pessoais não são publicados no GitHub.
 
-`git pull` atualiza o clone, não a cópia instalada. Siga o [procedimento de atualização](docs/UPDATES.md), preservando os dados. A instalação cria um atalho no menu Iniciar, mas não ativa a inicialização com Windows: copie o atalho personalizado para `shell:startup` e confira se está habilitado nos aplicativos de inicialização. O [overlay OBS](docs/OBS_USAGE_OVERLAY.md) tem servidor e inicialização separados.
+`git pull` atualiza o clone, não a cópia instalada. Siga o [procedimento de atualização](docs/UPDATES.md), preservando os dados. A instalação cria um atalho no menu Iniciar, mas não ativa a inicialização com Windows: copie o atalho personalizado para `shell:startup` e confira se está habilitado nos aplicativos de inicialização.
 
 Consulte o [guia detalhado em espanhol](README.es.md) ou [em inglês](README.md) para comandos de importação, diagnóstico e limites da atualização automática.
