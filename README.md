@@ -103,3 +103,7 @@ Do not delete preferences or locks blindly. Check process ownership first; see [
 **Preview:** isolated transfer, UI and Windows shortcut checks pass. The full media library is no longer copied into every renderer. A clean-install startup still needs manual validation. If personalization fails, Codex stays open; the project never restarts it to recover.
 
 [Agent guide (ES)](docs/AGENT.md) · [Updates (ES)](docs/UPDATES.md) · [Tests (ES)](docs/TESTING.md) · [MIT license for code](LICENSE)
+
+## Updating an existing installation
+
+After pulling repository changes and quitting Codex normally, run `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\update-installed.ps1` from the clone. This updates the installed copy while keeping wallpapers, settings and the shortcut. Codex updates are checked on the next personalized launch; incompatible UI changes still need a mod update. See [update coverage and recovery](docs/UPDATES.md).

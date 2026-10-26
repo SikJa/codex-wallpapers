@@ -2,6 +2,7 @@
 param([Parameter(Mandatory)][string]$Repository,[Parameter(Mandatory)][string]$DataRoot,[Parameter(Mandatory)][string]$PreviousVersion,[string]$TaskName)
 $ErrorActionPreference='Stop'
 . "$PSScriptRoot/identity.ps1"
+. "$PSScriptRoot/node-runtime.ps1"
 $mutex=New-Object Threading.Mutex($false,'Local.CodexWallpapers.UpdateHandoff')
 $locked=$false
 $report=Join-Path $DataRoot 'update-handoff.json'
@@ -24,6 +25,16 @@ try {
  if(-not $new){throw 'Official update did not finish within 15 minutes; no reopening attempted'}
  Start-Sleep -Seconds 5
  if((Get-CWPackage).Version -ne $new.Version){throw 'Package changed again; handoff cancelled'}
+ # Check compatibility BEFORE touching an instance reopened by the official updater.
+ # A new version number alone is not evidence that the wallpaper runtime works.
+ $node=Initialize-CWNode
+ $probe=& $node.Source (Join-Path $Repository 'src/compatibility-probe.mjs') (Join-Path $new.Root 'app/resources/app.asar')
+ $probeExit=$LASTEXITCODE
+ $probe|Set-Content -LiteralPath (Join-Path $DataRoot 'compatibility-probe.json') -Encoding UTF8
+ if($probeExit -ne 0 -or -not ($probe|ConvertFrom-Json).compatible){$record.state='unsupported-update-left-open';return}
+ $env:CODEX_WALLPAPERS_DATA=$DataRoot
+ & $node.Source (Join-Path $Repository 'src/apply.mjs') --check 1> (Join-Path $DataRoot 'preflight.log') 2> (Join-Path $DataRoot 'preflight-error.log')
+ if($LASTEXITCODE -ne 0){$record.state='preflight-failed-left-open';return}
  $config=Join-Path $DataRoot 'update-launcher.json'
  $launcher=$null
  if(Test-Path -LiteralPath $config){$launcher=(Get-Content -LiteralPath $config -Raw|ConvertFrom-Json).launcher;if(-not(Test-Path -LiteralPath $launcher -PathType Leaf)){throw 'Configured launcher missing'}}

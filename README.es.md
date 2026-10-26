@@ -103,3 +103,7 @@ No borres preferencias ni locks para probar suerte. Primero comprobá qué proce
 **Preview:** pasaron las pruebas aisladas de transferencia, interfaz y acceso de Windows. La biblioteca completa ya no se copia dentro de cada renderer. Falta validar manualmente el arranque en una instalación limpia. Si la personalización falla, Codex queda abierto; el proyecto nunca lo reinicia para recuperarse.
 
 [Guía del agente](docs/AGENT.md) · [Actualizaciones](docs/UPDATES.md) · [Pruebas](docs/TESTING.md) · [Licencia MIT del código](LICENSE)
+
+## Actualizar una instalación existente
+
+Después de actualizar el clon y cerrar Codex normalmente, ejecutá `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\update-installed.ps1`. Conserva fondos, preferencias y el acceso. Las versiones nuevas de Codex se comprueban al abrir desde el acceso personalizado; los cambios incompatibles requieren adaptar el mod. Ver [alcance y recuperación](docs/UPDATES.md).

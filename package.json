@@ -1,6 +1,6 @@
 {
   "name": "codex-wallpapers",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "private": true,
   "description": "Unofficial, local wallpaper customization for Codex Desktop on Windows",
   "type": "module",

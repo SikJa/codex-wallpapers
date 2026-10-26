@@ -69,3 +69,7 @@ O código instalado fica em `%LOCALAPPDATA%\CodexWallpapers\app`; biblioteca, m�
 `git pull` atualiza o clone, não a cópia instalada. Siga o [procedimento de atualização](docs/UPDATES.md), preservando os dados. A instalação cria um atalho no menu Iniciar, mas não ativa a inicialização com Windows: copie o atalho personalizado para `shell:startup` e confira se está habilitado nos aplicativos de inicialização.
 
 Consulte o [guia detalhado em espanhol](README.es.md) ou [em inglês](README.md) para comandos de importação, diagnóstico e limites da atualização automática.
+
+## Atualizar uma instalação existente
+
+Após atualizar o clone e fechar o Codex normalmente, execute `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\update-installed.ps1`. Preserva wallpapers, preferências e o atalho. Novas versões do Codex são verificadas na abertura personalizada; mudanças incompatíveis precisam de uma atualização do mod. Veja [cobertura e recuperação](docs/UPDATES.md).
